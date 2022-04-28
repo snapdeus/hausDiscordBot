@@ -11,6 +11,8 @@ const getNumOfEps = async () => {
         console.log(e);
     }
 };
+
+
 module.exports.getRandomShow = async () => {
 
     const numEps = await getNumOfEps()
@@ -20,7 +22,15 @@ module.exports.getRandomShow = async () => {
         const res = await axios.get(url, config)
         // console.log(res.data.data[randomNumber].id)
         const episode = res.data.data[randomNumber]
-        return { episode, numEps };
+        let episodeNumber = episode.attributes.number;
+        let totalPages = (Math.ceil(numEps / 10))
+        let pageNumber;
+        if (episodeNumber % 10 >= numEps % 10 || episodeNumber % 10 === 0) {
+            pageNumber = totalPages - Math.ceil(episodeNumber / 10)
+        } else if (episodeNumber % 10 < numEps % 10) {
+            pageNumber = totalPages - (Math.ceil(episodeNumber / 10) - 1)
+        }
+        return { episode, numEps, pageNumber };
     } catch (e) {
         console.log(e);
     }
