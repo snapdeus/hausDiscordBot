@@ -20,20 +20,29 @@ client.commands = new Discord.Collection();
 
 const prefix = "!"
 
-// client.on('ready', async () => {
-//     console.log('hausBot logged in')
 
-//     const { episode, numEps } = await episodes.getRandomShow();
-//     console.log(numEps, episode.attributes.number)
-//     const channel = client.channels.cache.get('968599620366250024');
 
-//     setInterval(() => channel.send(`https://hausofdecline.com/episodes/1/${ episode.id }`), 3000)
+mongoose.connect('mongodb://localhost:27017/haus-db?authSource=admin', {
+    useNewUrlParser: true,
+    // useCreateIndex: true,
+    useUnifiedTopology: true,
+    // useFindAndModify: false
+    user: process.env.MONGO_USER,
+    pass: process.env.MONGO_PW,
+    autoIndex: false
+});
 
-// })
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+    console.log('Database connected');
+});
+
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
     const command = require(`./commands/${ file }`);
+
     // set a new item in the Collection
     // with the key as the command name and the value as the exported module
     client.commands.set(command.name, command);
@@ -54,6 +63,9 @@ client.on('ready', () => {
 
 
 })
+
+
+
 
 client.on('messageCreate', msg => {
     if (!msg.content.startsWith(prefix) || msg.author.bot) return;
