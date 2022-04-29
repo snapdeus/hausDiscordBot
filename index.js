@@ -22,7 +22,7 @@ const prefix = "!"
 
 
 
-mongoose.connect('mongodb://localhost:27017/haus-db?authSource=admin', {
+mongoose.connect(`mongodb://localhost:27017/${ process.env.MONGO_USER }?authSource=admin`, {
     useNewUrlParser: true,
     // useCreateIndex: true,
     useUnifiedTopology: true,
