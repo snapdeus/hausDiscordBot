@@ -75,6 +75,13 @@ client.on('ready', () => {
 
 
 client.on('messageCreate', msg => {
+    if (msg.content.toLowerCase() === 'obamna' && !msg.author.bot) {
+        msg.reply('SODA')
+    } else if (msg.content.toLowerCase() === 'soda' && !msg.author.bot) {
+        msg.reply('Obamna')
+    }
+
+
     if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
     const args = msg.content.slice(prefix.length).trim().split(' ');

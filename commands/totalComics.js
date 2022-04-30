@@ -5,7 +5,7 @@ const Discord = require('discord.js')
 
 module.exports = {
     name: 'totalcomics',
-    description: 'get comic',
+    description: 'get total comics',
 
     async execute(message, args) {
 
