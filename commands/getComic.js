@@ -39,7 +39,7 @@ module.exports = {
                     pageNumber = totalPages - (Math.ceil(comicNumber / 15) - 1)
                 }
 
-                console.log(pageNumber)
+
                 const embedMsg = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setTitle(`${ comic[0].title }`)

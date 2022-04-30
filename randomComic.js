@@ -35,7 +35,7 @@ module.exports.getRandomComic = async () => {
             pageNumber = totalPages - (Math.ceil(comicNumber / 15) - 1)
         }
 
-        console.log("random comic" + randomNumber)
+
         const embedMsg = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle(`${ comic[0].title }`)

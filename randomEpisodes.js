@@ -39,7 +39,7 @@ module.exports.getRandomShow = async () => {
         } else if (episodeNumber % 10 < numEps % 10) {
             pageNumber = totalPages - (Math.ceil(episodeNumber / 10) - 1)
         }
-        console.log('random ep' + randomNumber)
+
         return { episode, numEps, pageNumber };
     } catch (e) {
         console.log(e);
