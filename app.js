@@ -101,20 +101,5 @@ client.on('messageCreate', msg => {
 
 
 
-// const getShow = async () => {
-//     try {
-//         const url = `https://api.transistor.fm/v1/episodes?pagination[page]=1&pagination[per]=100000&fields`
-//         const res = await axios.get(url, config)
-//         const epNumber = 100;
-//         const episode = res.data.data.filter(ep => ep.attributes.number === epNumber)
-
-
-//         console.log(episode[0])
-//     } catch (e) {
-//         console.log(e);
-//     }
-// };
-
-// getShow();
 
 client.login(process.env.BOT_TOKEN)

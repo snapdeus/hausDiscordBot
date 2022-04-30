@@ -33,6 +33,11 @@ module.exports = {
 
                 const comicNumber = comic[0].ordinality
 
+                if (comicNumber > totalGayComics) {
+                    return message.channel.send(`We don't have that many comics yet`);
+                }
+
+
                 if (comicNumber % 15 >= totalGayComics % 15 || comicNumber % 15 === 0) {
                     pageNumber = totalPages - Math.ceil(comicNumber / 15)
                 } else if (comicNumber % 15 < totalGayComics % 15) {
