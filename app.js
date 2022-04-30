@@ -8,6 +8,7 @@ const randomEpisodes = require('./randomEpisodes')
 const fs = require('fs')
 const Discord = require('discord.js')
 const { Client, Intents } = require('discord.js');
+const cron = require('node-cron')
 
 
 
@@ -57,21 +58,25 @@ client.on('ready', () => {
     const retrieveEpisodeAndSend = async () => {
         const { episode, numEps, pageNumber } = await randomEpisodes.getRandomShow();
         // console.log(numEps, episode.attributes.number);
-        const channel = client.channels.cache.get('968530303020838962');
+        const channel = client.channels.cache.get(process.env.EPISODE_CHANNEL);
         channel.send(`https://hausofdecline.com/episodes/${ pageNumber }/${ episode.id }`);
     };
-    setInterval(() => retrieveEpisodeAndSend(), 86000000);
+
+    cron.schedule('0 15 * * *', () => {
+        retrieveEpisodeAndSend();
+    });
 
     const retrieveComicAndSend = async () => {
         const { embedMsg } = await randomComic.getRandomComic();
-        const channel = client.channels.cache.get('968530285912281108');
+        const channel = client.channels.cache.get(process.env.COMIC_CHANNEL);
         channel.send({ embeds: [embedMsg] });
     }
 
-    setInterval(() => retrieveComicAndSend(), 3600000);
+
+    cron.schedule('0 */2 * * *', () => {
+        retrieveComicAndSend();
+    });
 })
-
-
 
 
 client.on('messageCreate', msg => {

@@ -12,13 +12,17 @@ const getNumOfEps = async () => {
     }
 };
 
+const numCache = [];
+
 const generateRandomBetween = (min, max, exclude) => {
     let ranNum = Math.floor(Math.random() * (max - min)) + min;
 
-    if (ranNum === exclude) {
-        ranNum = generateRandomBetween(min, max, exclude);
+    if (ranNum === exclude || numCache.includes(ranNum)) {
+        return generateRandomBetween(min, max, exclude);
     }
 
+    numCache.push(ranNum);
+    if (numCache.length > 23) numCache.shift();
     return ranNum;
 }
 
@@ -39,7 +43,7 @@ module.exports.getRandomShow = async () => {
         } else if (episodeNumber % 10 < numEps % 10) {
             pageNumber = totalPages - (Math.ceil(episodeNumber / 10) - 1)
         }
-
+        console.log(numCache)
         return { episode, numEps, pageNumber };
     } catch (e) {
         console.log(e);
