@@ -23,6 +23,10 @@ module.exports = {
             return message.channel.send(`Was that a number?!`);
         }
 
+        if (args[0] < 0) {
+            return message.channel.send('No negative numbers please')
+        }
+
         if (args[0] == 0) {
             return message.channel.send('What is a 0th comic?')
         }

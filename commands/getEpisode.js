@@ -24,6 +24,10 @@ module.exports = {
         if (args[0] == 0) {
             return message.channel.send('What is a 0th episode?')
         }
+        if (args[0] < 0) {
+            return message.channel.send('No negative numbers please')
+        }
+
 
         if (args[0] == 58) {
             return message.channel.send('There is no episode 58.')
