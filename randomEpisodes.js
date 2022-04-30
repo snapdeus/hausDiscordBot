@@ -12,11 +12,20 @@ const getNumOfEps = async () => {
     }
 };
 
+const generateRandomBetween = (min, max, exclude) => {
+    let ranNum = Math.floor(Math.random() * (max - min)) + min;
+
+    if (ranNum === exclude) {
+        ranNum = generateRandomBetween(min, max, exclude);
+    }
+
+    return ranNum;
+}
 
 module.exports.getRandomShow = async () => {
 
     const numEps = await getNumOfEps()
-    let randomNumber = Math.floor(Math.random() * numEps);
+    let randomNumber = generateRandomBetween(1, numEps + 1, 0)
     try {
         const url = `https://api.transistor.fm/v1/episodes?pagination[page]=1&pagination[per]=` + `${ numEps }`
         const res = await axios.get(url, config)
@@ -30,6 +39,7 @@ module.exports.getRandomShow = async () => {
         } else if (episodeNumber % 10 < numEps % 10) {
             pageNumber = totalPages - (Math.ceil(episodeNumber / 10) - 1)
         }
+        console.log('random ep' + randomNumber)
         return { episode, numEps, pageNumber };
     } catch (e) {
         console.log(e);

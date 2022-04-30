@@ -4,7 +4,7 @@ const path = require('path')
 const axios = require('axios')
 const mongoose = require('mongoose')
 const randomComic = require('./randomComic')
-const episodes = require('./episodes')
+const randomEpisodes = require('./randomEpisodes')
 const fs = require('fs')
 const Discord = require('discord.js')
 const { Client, Intents } = require('discord.js');
@@ -22,7 +22,7 @@ const prefix = "!"
 
 
 
-mongoose.connect(`mongodb://localhost:27017/${ process.env.MONGO_USER }?authSource=admin`, {
+mongoose.connect(`mongodb://localhost:27017/haus-db?authSource=admin`, {
     useNewUrlParser: true,
     // useCreateIndex: true,
     useUnifiedTopology: true,
@@ -51,17 +51,24 @@ for (const file of commandFiles) {
 
 
 
+
 client.on('ready', () => {
     console.log('hausBot logged in')
-    // async function retrieveEpisodeAndSend() {
-    //     const { episode, numEps, pageNumber } = await episodes.getRandomShow();
-    //     console.log(numEps, episode.attributes.number)
-    //     const channel = client.channels.cache.get('968599620366250024');
-    //     channel.send(`https://hausofdecline.com/episodes/${ pageNumber }/${ episode.id }`)
-    // }
-    // setInterval(() => retrieveEpisodeAndSend(), 10000)
+    const retrieveEpisodeAndSend = async () => {
+        const { episode, numEps, pageNumber } = await randomEpisodes.getRandomShow();
+        // console.log(numEps, episode.attributes.number);
+        const channel = client.channels.cache.get('968530303020838962');
+        channel.send(`https://hausofdecline.com/episodes/${ pageNumber }/${ episode.id }`);
+    };
+    setInterval(() => retrieveEpisodeAndSend(), 86000000);
 
+    const retrieveComicAndSend = async () => {
+        const { embedMsg } = await randomComic.getRandomComic();
+        const channel = client.channels.cache.get('968530285912281108');
+        channel.send({ embeds: [embedMsg] });
+    }
 
+    setInterval(() => retrieveComicAndSend(), 3600000);
 })
 
 
