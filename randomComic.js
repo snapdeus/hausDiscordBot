@@ -38,7 +38,7 @@ module.exports.getRandomComic = async () => {
 
         const embedMsg = new Discord.MessageEmbed()
             .setColor('#0099ff')
-            .setTitle(`${ comic[0].title }`)
+            .setTitle(`#${ comic[0].ordinality } ${ comic[0].title }`)
             .setURL(`https://hausofdecline.com/comics/gay/${ pageNumber }/${ comic[0].id }`)
             .setImage(`https://hausofdecline.com/uploads/GayComics/${ comic[0].filename }`);
 
