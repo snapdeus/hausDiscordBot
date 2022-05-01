@@ -2,6 +2,7 @@ require('dotenv').config();
 const axios = require('axios')
 const apiKey = process.env.TRANSISTOR_API_KEY;
 const config = { headers: { 'x-api-key': apiKey } }
+const Discord = require('discord.js')
 
 const getNumOfEps = async () => {
     try {
@@ -44,7 +45,20 @@ module.exports.getRandomShow = async () => {
             pageNumber = totalPages - (Math.ceil(episodeNumber / 10) - 1)
         }
 
-        return { episode, numEps, pageNumber };
+
+        //create embed
+        const embedMsg = new Discord.MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle(`#${ episode.attributes.number } ${ episode.attributes.title }`)
+            .setURL(`https://hausofdecline.com/episodes/${ pageNumber }/${ episode.id }`)
+            .addField("Date", episode.attributes.formatted_published_at)
+            .addField("Summary", episode.attributes.summary)
+            .setImage(episode.attributes.image_url);
+
+
+        return { episode, numEps, pageNumber, embedMsg };
+
+
     } catch (e) {
         console.log(e);
     }

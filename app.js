@@ -56,22 +56,23 @@ for (const file of commandFiles) {
 client.on('ready', () => {
     console.log('hausBot logged in')
     const retrieveEpisodeAndSend = async () => {
-        const { episode, numEps, pageNumber } = await randomEpisodes.getRandomShow();
-        // console.log(numEps, episode.attributes.number);
+        const { embedMsg } = await randomEpisodes.getRandomShow();
         const channel = client.channels.cache.get(process.env.EPISODE_CHANNEL);
-        channel.send(`https://hausofdecline.com/episodes/${ pageNumber }/${ episode.id }`);
+        channel.send({ embeds: [embedMsg] });
     };
 
     cron.schedule('0 15 * * *', () => {
         retrieveEpisodeAndSend();
     });
 
+
+
+
     const retrieveComicAndSend = async () => {
         const { embedMsg } = await randomComic.getRandomComic();
         const channel = client.channels.cache.get(process.env.COMIC_CHANNEL);
         channel.send({ embeds: [embedMsg] });
     }
-
 
     cron.schedule('0 */2 * * *', () => {
         retrieveComicAndSend();
