@@ -1,8 +1,11 @@
+
 require('dotenv').config();
 const axios = require('axios')
 const apiKey = process.env.TRANSISTOR_API_KEY;
 const config = { headers: { 'x-api-key': apiKey } }
 const Discord = require('discord.js')
+
+
 
 const getNumOfEps = async () => {
     try {
@@ -12,6 +15,8 @@ const getNumOfEps = async () => {
         console.log(e);
     }
 };
+
+
 
 const numCache = [];
 

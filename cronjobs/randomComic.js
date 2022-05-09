@@ -1,6 +1,6 @@
 require('dotenv').config()
 const ObjectID = require('mongodb').ObjectId;
-const GayComic = require('./models/gayComics')
+const GayComic = require('../models/gayComics')
 const Discord = require('discord.js')
 
 const numCache = [];

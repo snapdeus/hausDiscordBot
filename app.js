@@ -3,8 +3,8 @@ require('dotenv').config();
 const path = require('path')
 const axios = require('axios')
 const mongoose = require('mongoose')
-const randomComic = require('./randomComic')
-const randomEpisodes = require('./randomEpisodes')
+const randomComic = require('./cronjobs/randomComic')
+const randomEpisodes = require('./cronjobs/randomEpisodes')
 const fs = require('fs')
 const Discord = require('discord.js')
 const { Client, Intents } = require('discord.js');
@@ -55,6 +55,7 @@ for (const file of commandFiles) {
 
 client.on('ready', () => {
     console.log('hausBot logged in')
+
     const retrieveEpisodeAndSend = async () => {
         const { embedMsg } = await randomEpisodes.getRandomShow();
         const channel = client.channels.cache.get(process.env.EPISODE_CHANNEL);
@@ -68,6 +69,8 @@ client.on('ready', () => {
 
 
 
+
+
     const retrieveComicAndSend = async () => {
         const { embedMsg } = await randomComic.getRandomComic();
         const channel = client.channels.cache.get(process.env.COMIC_CHANNEL);
@@ -77,6 +80,11 @@ client.on('ready', () => {
     cron.schedule('0 */2 * * *', () => {
         retrieveComicAndSend();
     });
+
+
+
+
+
 })
 
 
