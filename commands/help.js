@@ -1,5 +1,9 @@
 const Discord = require('discord.js')
 
+
+
+
+
 module.exports = {
     name: 'help',
     description: 'bot commands',
@@ -17,7 +21,7 @@ module.exports = {
             .addField('Ask Magic Gay 8Ball a question', '!8ball')
             .addField('Obamna/SODA', 'Obamna [or] SODA')
 
-
+        console.log('HELP MESSAGE SENT')
         message.author.send({ embeds: [embedMsg] });
 
     }
