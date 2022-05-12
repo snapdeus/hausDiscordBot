@@ -63,7 +63,7 @@ module.exports = {
 
             var warnSuccessfulEmbed = new Discord.MessageEmbed()
                 .setColor(embedColor)
-                .setDescription(` **User Successfully Warned**`)
+                .setDescription(` **${ user } Successfully Warned**`)
                 .addField('Warned by', `${ message.author }`)
                 .addField('Reason', `**${ reason }**`)
             let mChannel = db.fetch(`modlog_${ message.guild.id }`)
@@ -90,7 +90,7 @@ module.exports = {
 
             var warnSuccessfulEmbed = new Discord.MessageEmbed()
                 .setColor(embedColor)
-                .setDescription(` **User Successfully Warned & Muted**`)
+                .setDescription(` **${ user } Successfully Warned & Muted**`)
                 .addField('Warned by', `${ message.author }`)
                 .addField('Reason', `**${ reason }**`)
 
@@ -141,7 +141,7 @@ module.exports = {
 
             var warnSuccessfulEmbed = new Discord.MessageEmbed()
                 .setColor(embedColor)
-                .setDescription(` **User Successfully Warned & Kicked, 3rd warning**`)
+                .setDescription(` **${ user } Successfully Warned & Kicked, 3rd warning**`)
                 .addField('Warned by', `${ message.author }`)
                 .addField('Reason', `**${ reason }**`)
 
@@ -177,7 +177,7 @@ module.exports = {
 
             var warnSuccessfulEmbed = new Discord.MessageEmbed()
                 .setColor(embedColor)
-                .setDescription(` **User BANNED, final warning**`)
+                .setDescription(` **${ user } BANNED, final warning**`)
                 .addField('Warned by', `${ message.author }`)
                 .addField('Reason', `**${ reason }**`)
 

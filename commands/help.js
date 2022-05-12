@@ -13,6 +13,8 @@ module.exports = {
             .setColor('#dd99ff')
             .setTitle('Bot Docs')
             .setDescription('Here are the commands:')
+            .addField("Send the admins a report.", "!report")
+            .addField("See if you have warnings", "!warnings <@username>")
             .addField("Total number of Gay Comics", "!totalcomics")
             .addField("Post a gay comic", "!comic <number>")
             .addField("Total number of podcast episodes", "!totalepisodes")
