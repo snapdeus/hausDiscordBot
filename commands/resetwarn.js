@@ -32,8 +32,8 @@ module.exports = {
 
         db.delete(`warnings_${ message.guild.id }_${ user.id }`);
         const resetwarn = new Discord.MessageEmbed()
-            .setTitle('Warnings Reseted')
-            .setDescription(`OK. **Your warnings are reseted by ${ message.author.username } from ${ message.guild.name }**`)
+            .setTitle('Warnings Reset')
+            .setDescription(`OK. **Your warnings are reset by ${ message.author.username } from ${ message.guild.name }**`)
             .setTimestamp()
             .setFooter({ text: `${ client.user.username }` })
             .setThumbnail(client.user.displayAvatarURL({ format: 'png', dynamic: true, size: 1024 }))
@@ -41,8 +41,8 @@ module.exports = {
             { embeds: [resetwarn] }
         );
         const resetwarn2 = new Discord.MessageEmbed()
-            .setTitle('Warnings Reseted')
-            .setDescription(`OK. **Reseted all warnings of ${ message.mentions.users.first().username }**`)
+            .setTitle('Warnings Reset')
+            .setDescription(`OK. **Reset all warnings of ${ message.mentions.users.first().username }**`)
             .setTimestamp()
             .setFooter({ text: `${ client.user.username }` })
             .setThumbnail(client.user.displayAvatarURL({ format: 'png', dynamic: true, size: 1024 }))

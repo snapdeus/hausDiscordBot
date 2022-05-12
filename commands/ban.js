@@ -52,5 +52,7 @@ module.exports = {
         let banChannel = message.guild.channels.cache.get(mChannel)
         if (!banChannel) return;
         banChannel.send({ embeds: [e] })
+        // message.delete().then(msg => console.log(`Deleted message from ${ msg.author.username }`))
+        //     .catch(console.error);
     }
 };

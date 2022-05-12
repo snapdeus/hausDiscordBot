@@ -32,7 +32,6 @@ module.exports = {
         const vrole = user.roles.cache
 
         let muterole = message.guild.roles.cache.find(x => x.name === "Muted");
-
         if (!muterole) {
             try {
                 muterole = await message.guild.roles.create({
@@ -46,9 +45,10 @@ module.exports = {
                 console.log(e.stack);
             }
         }
-
         // await user.roles.remove(vrole);
         await user.roles.add(muterole);
+
+
 
 
         const mute = new Discord.MessageEmbed()
