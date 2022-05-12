@@ -8,7 +8,7 @@ module.exports = {
     name: 'help',
     description: 'bot commands',
 
-    async execute(message, args) {
+    async execute(client, message, args) {
         const embedMsg = new Discord.MessageEmbed()
             .setColor('#dd99ff')
             .setTitle('Bot Docs')
@@ -23,6 +23,7 @@ module.exports = {
 
         console.log('HELP MESSAGE SENT')
         message.author.send({ embeds: [embedMsg] });
+
 
     }
 }

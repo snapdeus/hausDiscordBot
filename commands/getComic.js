@@ -7,7 +7,7 @@ module.exports = {
     name: 'comic',
     description: 'get comic',
 
-    async execute(message, args) {
+    async execute(client, message, args) {
 
         const maxNumber = await GayComic.findOne({})
             .sort({ ordinality: -1 })

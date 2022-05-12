@@ -16,7 +16,7 @@ const apiKey = process.env.TRANSISTOR_API_KEY;
 const config = { headers: { 'x-api-key': apiKey } }
 
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS] });
 client.commands = new Discord.Collection();
 
 const prefix = "!"
@@ -58,7 +58,7 @@ client.on('ready', () => {
 
     const retrieveEpisodeAndSend = async () => {
         const { embedMsg } = await randomEpisodes.getRandomShow();
-        const channel = client.channels.cache.get(process.env.EPISODE_CHANNEL);
+        const channel = client.channels.cache.get(process.env.TESTEPISODE_CHANNEL);
         channel.send({ embeds: [embedMsg] });
     };
 
@@ -73,7 +73,7 @@ client.on('ready', () => {
 
     const retrieveComicAndSend = async () => {
         const { embedMsg } = await randomComic.getRandomComic();
-        const channel = client.channels.cache.get(process.env.COMIC_CHANNEL);
+        const channel = client.channels.cache.get(process.env.TESTCOMIC_CHANNEL);
         channel.send({ embeds: [embedMsg] });
     }
 
@@ -88,17 +88,17 @@ client.on('ready', () => {
 })
 
 
-client.on('messageCreate', msg => {
-    if (msg.content.toLowerCase() === 'obamna' && !msg.author.bot) {
-        msg.reply('SODA')
-    } else if (msg.content.toLowerCase() === 'soda' && !msg.author.bot) {
-        msg.reply('Obamna')
+client.on('messageCreate', message => {
+    if (message.content.toLowerCase() === 'obamna' && !message.author.bot) {
+        message.reply('SODA')
+    } else if (message.content.toLowerCase() === 'soda' && !message.author.bot) {
+        message.reply('Obamna')
     }
 
 
-    if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-    const args = msg.content.slice(prefix.length).trim().split(' ');
+    const args = message.content.slice(prefix.length).trim().split(' ');
     const commandName = args.shift().toLowerCase();
 
     if (!client.commands.has(commandName)) return;
@@ -106,14 +106,14 @@ client.on('messageCreate', msg => {
     const command = client.commands.get(commandName);
 
     try {
-        command.execute(msg, args);
+        command.execute(client, message, args);
     } catch (error) {
         console.error(error);
-        msg.reply('there was an error trying to execute that command!');
+        message.reply('there was an error trying to execute that command!');
     }
 })
 
 
 
 
-client.login(process.env.BOT_TOKEN)
+client.login(process.env.TESTBOT_TOKEN)

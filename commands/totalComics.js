@@ -7,7 +7,7 @@ module.exports = {
     name: 'totalcomics',
     description: 'get total comics',
 
-    async execute(message, args) {
+    async execute(client, message, args) {
 
 
 

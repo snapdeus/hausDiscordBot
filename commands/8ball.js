@@ -5,7 +5,7 @@ module.exports = {
     usage: ["Let the 8ball answer your question```{prefix}8ball <question>```"],
 
     // Execute contains content for the command
-    async execute(message, args) {
+    async execute(client, message, args) {
 
         if (!args[0]) return message.reply({ content: "Please ask a question", allowedMentions: { repliedUser: false } });
 

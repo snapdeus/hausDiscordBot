@@ -11,7 +11,7 @@ module.exports = {
     name: 'totalepisodes',
     description: 'get total episodes',
 
-    async execute(message, args) {
+    async execute(client, message, args) {
 
 
 

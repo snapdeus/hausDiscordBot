@@ -12,7 +12,7 @@ const Discord = require('discord.js');
 module.exports = {
     name: 'episode',
     description: 'replies with episode',
-    execute(message, args) {
+    execute(client, message, args) {
         if (!args.length) {
             return message.channel.send('Which episode number?')
         }
