@@ -70,19 +70,18 @@ client.on('ready', () => {
 
 
 
-
     const retrieveComicAndSend = async () => {
         const { embedMsg } = await randomComic.getRandomComic();
         const channel = client.channels.cache.get(process.env.COMIC_CHANNEL);
         channel.send({ embeds: [embedMsg] });
     }
 
-    cron.schedule('0 */2 * * *', () => {
+    cron.schedule('0 */1 * * *', () => {
         retrieveComicAndSend();
     });
 
 
-
+    // setInterval(() => retrieveComicAndSend(), 2000)
 
 
 })
