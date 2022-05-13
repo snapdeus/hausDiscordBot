@@ -76,7 +76,7 @@ client.on('ready', () => {
         channel.send({ embeds: [embedMsg] });
     }
 
-    cron.schedule('0 */1 * * *', () => {
+    cron.schedule('0 */2 * * *', () => {
         retrieveComicAndSend();
     });
 
