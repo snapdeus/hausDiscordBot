@@ -4,6 +4,8 @@ const axios = require('axios')
 const apiKey = process.env.TRANSISTOR_API_KEY;
 const config = { headers: { 'x-api-key': apiKey } }
 const Discord = require('discord.js')
+const db = require("quick.db")
+
 
 
 
@@ -16,26 +18,48 @@ const getNumOfEps = async () => {
     }
 };
 
-
-
-const numCache = [];
-
-const generateRandomBetween = (min, max, exclude) => {
-    let ranNum = Math.floor(Math.random() * (max - min)) + min;
-
-    if (ranNum === exclude || numCache.includes(ranNum)) {
-        return generateRandomBetween(min, max, exclude);
+const generateRandom = (min, max, exclude) => {
+    if (!db.has('episodesArray')) {
+        db.set('episodesArray', [0])
     }
-
-    numCache.push(ranNum);
-    if (numCache.length > 23) numCache.shift();
-    return ranNum;
+    let ranNum = Math.floor(Math.random() * (max - min)) + min;
+    let cache = db.get('episodesArray')
+    //no episode 58
+    if (ranNum === exclude || cache.includes(ranNum)) {
+        return generateRandom(min, max, exclude);
+    }
+    addEpisodeToCache(ranNum)
+    return ranNum
 }
+
+function addEpisodeToCache(num) {
+    db.push('episodesArray', num)
+    let cache = db.get('episodesArray')
+    console.log(cache)
+    if (cache.length > 100) {
+        cache.shift()
+        db.set('episodesArray', cache)
+    }
+}
+//OLD WAY WITH NON PERSISTENT CACHE
+// const numCache = [];
+// const generateRandomBetween = (min, max, exclude) => {
+//     let ranNum = Math.floor(Math.random() * (max - min)) + min;
+
+//     if (ranNum === exclude || numCache.includes(ranNum)) {
+//         return generateRandomBetween(min, max, exclude);
+//     }
+
+//     numCache.push(ranNum);
+//     if (numCache.length > 23) numCache.shift();
+//     return ranNum;
+// }
 
 module.exports.getRandomShow = async () => {
 
     const numEps = await getNumOfEps()
-    let randomNumber = generateRandomBetween(1, numEps + 1, 0)
+    //numEps + 1 because we deleted one ep
+    let randomNumber = generateRandom(1, numEps, 0)
     try {
         const url = `https://api.transistor.fm/v1/episodes?pagination[page]=1&pagination[per]=` + `${ numEps }`
         const res = await axios.get(url, config)
