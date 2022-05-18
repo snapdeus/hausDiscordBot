@@ -110,7 +110,7 @@ client.on('messageCreate', message => {
     // console.log(msgContent1, msgContent2)
 
 
-    if ((message.content.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").match('cum') && message.content.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").match('sum') || message.content.trim().replace(/\s/g, '').match('cumsum') || msgContent1.match('cum') && msgContent2.match('sum'))) {
+    if ((message.content.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").match('cum') && message.content.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").match('sum') || message.content.trim().replace(/\s/g, '').match('cumsum') || msgContent1.toLowerCase().match('cum') && msgContent2.toLowerCase().match('sum'))) {
         message.delete()
         message.channel.send('NO.')
 
