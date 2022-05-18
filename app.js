@@ -94,7 +94,7 @@ client.on('messageCreate', message => {
         message.reply('Obamna')
     }
 
-    if (message.content.toLowerCase().includes('cum sum') || (message.content.toLowerCase().includes('sum') && message.content.toLowerCase().includes('cum')) || (message.content.match(/c.m/) && message.content.match(/s.m/))) {
+    if (message.content.toLowerCase().includes('cum sum') || (message.content.toLowerCase().includes('sum') && message.content.toLowerCase().includes('cum')) || (message.content.match(/c.m/gi) && message.content.match(/s.m/gi))) {
         message.delete()
         message.channel.send('NO.')
 
