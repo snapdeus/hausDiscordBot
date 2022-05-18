@@ -94,7 +94,11 @@ client.on('messageCreate', message => {
         message.reply('Obamna')
     }
 
+    if (message.content.toLowerCase().includes('cum sum')) {
+        message.delete()
+        message.channel.send('NO.')
 
+    }
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
     const args = message.content.slice(prefix.length).trim().split(' ');
