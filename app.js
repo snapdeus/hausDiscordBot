@@ -93,8 +93,10 @@ client.on('messageCreate', message => {
     } else if (message.content.toLowerCase() === 'soda' && !message.author.bot) {
         message.reply('Obamna')
     }
+    // if (message.content.toLowerCase().includes('cum sum') || (message.content.toLowerCase().includes('sum') && message.content.toLowerCase().includes('cum')) || (message.content.match(/c.m/gi) && message.content.match(/s.m/gi))) 
 
-    if (message.content.toLowerCase().includes('cum sum') || (message.content.toLowerCase().includes('sum') && message.content.toLowerCase().includes('cum')) || (message.content.match(/c.m/gi) && message.content.match(/s.m/gi))) {
+
+    if ((message.content.match(/c.m/gi) && message.content.match(/s.m/gi))) {
         message.delete()
         message.channel.send('NO.')
 
