@@ -103,20 +103,20 @@ client.on('messageCreate', message => {
 
     // }
 
-    const cumArgs = message.content.toLowerCase().split(' ')
+    // const cumArgs = message.content.toLowerCase().split(' ')
 
 
 
-    const msgContent1 = Array.from(new Set(cumArgs[0])).join('')
-    const msgContent2 = Array.from(new Set(cumArgs[1])).join('')
-    // console.log(msgContent1, msgContent2)
+    // const msgContent1 = Array.from(new Set(cumArgs[0])).join('')
+    // const msgContent2 = Array.from(new Set(cumArgs[1])).join('')
 
 
-    if ((message.content.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").match('cum') && message.content.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").match('sum') || message.content.trim().replace(/\s/g, '').match('cumsum') || msgContent1.toLowerCase().match('cum') && msgContent2.toLowerCase().match('sum'))) {
-        message.delete();
-        message.channel.send('NO.');
+    // if ((message.content.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").match('cum') && message.content.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").match('sum') || message.content.trim().replace(/\s/g, '').match('cumsum') || msgContent1.toLowerCase().match('cum') && msgContent2.toLowerCase().match('sum'))) {
+    //     message.delete();
+    //     message.channel.send('NO.');
+    // }
 
-    }
+
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
     const args = message.content.slice(prefix.length).trim().split(' ');
