@@ -96,7 +96,7 @@ client.on('messageCreate', message => {
     // if (message.content.toLowerCase().includes('cum sum') || (message.content.toLowerCase().includes('sum') && message.content.toLowerCase().includes('cum')) || (message.content.match(/c.m/gi) && message.content.match(/s.m/gi))) 
 
 
-    if ((message.content.match(/c.m/gi) && message.content.match(/s.m/gi))) {
+    if ((message.content.match(/\bc.m\b/gi) && message.content.match(/\bs.m\b/gi))) {
         message.delete()
         message.channel.send('NO.')
 
