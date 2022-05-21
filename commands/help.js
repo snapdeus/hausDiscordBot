@@ -22,6 +22,9 @@ module.exports = {
             .addField("Let hausBot jack off", '!jackoff')
             .addField('Ask Magic Gay 8Ball a question', '!8ball')
             .addField('Obamna/SODA', 'Obamna [or] SODA')
+            .addField('Random phrase', '!phrase')
+            .addField('Dice game', '!roll')
+            .addField('XP and Leaderboard', '!rank and !leaders')
 
         console.log('HELP MESSAGE SENT')
         message.author.send({ embeds: [embedMsg] });
