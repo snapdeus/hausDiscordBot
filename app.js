@@ -116,7 +116,7 @@ client.on('messageCreate', message => {
 })
 
 client.on('guildMemberAdd', async member => {
-    member.guild.channels.cache.get('977643932387270746').send(`${ makeUniqueGreeting() }, <@${ member.user.id }>.  ${ await createRandomPhrase() }.`);
+    member.guild.channels.cache.get('977643932387270746').send(`${ makeUniqueGreeting() }, <@${ member.user.id }>  ${ await createRandomPhrase() }.`);
 
 
 });

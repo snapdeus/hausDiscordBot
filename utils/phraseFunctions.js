@@ -70,9 +70,13 @@ async function createRandomPhrase() {
 
         middleSentence[numMiddle].toLowerCase(),
         describers[numDescriber].toLowerCase().concat(comma),
-
-        sentenceEnders[numEnder].toLowerCase().concat(period)
     )
+
+    if (sentenceEnders[numEnder].includes('?')) {
+        randomPhrases.push(sentenceEnders[numEnder].toLowerCase())
+    } else {
+        randomPhrases.push(sentenceEnders[numEnder].toLowerCase().concat(period))
+    }
 
     console.log(randomPhrases)
 
