@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { jackingOff, starter } = require('../src/jacking')
+const { jackingOff, starter } = require('../resources/jacking')
 
 
 module.exports = {
