@@ -11,60 +11,62 @@ const db = require("quick.db")
 
 const getNumOfEps = async () => {
     try {
-        const res = await axios.get('https://api.transistor.fm/v1/episodes', config)
-        return res.data.data[0].attributes.number;
+        const url = `https://api.transistor.fm/v1/episodes?pagination[page]=1&pagination[per]=500`
+        const res = await axios.get(url, config)
+        const numEps = parseInt(res.data.meta.totalCount)
+        const idArray = [];
+        for (let i = 0; i < numEps; i++) {
+            idArray.push(res.data.data[i].id)
+        }
+        return { numEps, idArray };
     } catch (e) {
         console.log(e);
     }
 };
 
-const generateRandom = (min, max, exclude) => {
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+//NO MAX IN THIS FUNCTION BECAUSE WE ARE GETTING numEps WHICH IS THE MAX
+async function generateRandom(min, exclude) {
     if (!db.has('episodesArray')) {
         db.set('episodesArray', [0])
     }
-    let ranNum = Math.floor(Math.random() * (max - min)) + min;
+    await sleep(1000)
+    const { numEps, idArray } = await getNumOfEps()
+    let ranNum = Math.floor(Math.random() * (numEps - min)) + min;
     let cache = db.get('episodesArray')
+    idArray[ranNum]
+    let randomEpisodeId = parseInt(idArray[ranNum])
+    console.log(cache.includes(randomEpisodeId))
     //no episode 58
-    if (ranNum === exclude || cache.includes(ranNum)) {
-        return generateRandom(min, max, exclude);
+    if (ranNum === exclude || cache.includes(randomEpisodeId)) {
+        return generateRandom(min, exclude);
     }
-    addEpisodeToCache(ranNum)
-    return ranNum
+    addEpisodeToCache(randomEpisodeId)
+    return { randomEpisodeId, numEps }
 }
 
-function addEpisodeToCache(num) {
-    db.push('episodesArray', num)
+function addEpisodeToCache(id) {
+    db.push('episodesArray', id)
     let cache = db.get('episodesArray')
-    console.log(cache)
+    // console.log(cache)
     if (cache.length > 100) {
         cache.shift()
         db.set('episodesArray', cache)
     }
 }
-//OLD WAY WITH NON PERSISTENT CACHE
-// const numCache = [];
-// const generateRandomBetween = (min, max, exclude) => {
-//     let ranNum = Math.floor(Math.random() * (max - min)) + min;
 
-//     if (ranNum === exclude || numCache.includes(ranNum)) {
-//         return generateRandomBetween(min, max, exclude);
-//     }
-
-//     numCache.push(ranNum);
-//     if (numCache.length > 23) numCache.shift();
-//     return ranNum;
-// }
 
 module.exports.getRandomShow = async () => {
-
-    const numEps = await getNumOfEps()
-    //numEps + 1 because we deleted one ep
-    let randomNumber = generateRandom(1, numEps, 0)
+    let { randomEpisodeId, numEps } = await generateRandom(1, 0)
+    console.log(randomEpisodeId)
     try {
-        const url = `https://api.transistor.fm/v1/episodes?pagination[page]=1&pagination[per]=` + `${ numEps }`
+        const url = `https://api.transistor.fm/v1/episodes/` + `${ randomEpisodeId }`
         const res = await axios.get(url, config)
         // console.log(res.data.data[randomNumber].id)
-        const episode = res.data.data[randomNumber]
+        const episode = res.data.data
         let episodeNumber = episode.attributes.number;
         let totalPages = (Math.ceil(numEps / 10))
         let pageNumber;

@@ -67,9 +67,10 @@ client.on('ready', () => {
     cron.schedule('0 15 * * *', () => {
         retrieveEpisodeAndSend();
     });
+    // cron.schedule('*/1 * * * *', () => {
+    //     retrieveEpisodeAndSend();
+    // });
 
-
-    // setInterval(() => retrieveEpisodeAndSend(), 5000)
 
 
     const retrieveComicAndSend = async () => {

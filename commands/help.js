@@ -25,6 +25,7 @@ module.exports = {
             .addField('Random phrase', '!phrase')
             .addField('Dice game', '!roll')
             .addField('XP and Leaderboard', '!rank and !leaders')
+            .addField('Shopping Bag', '!bag, !bread, !dairy')
 
         console.log('HELP MESSAGE SENT')
         message.author.send({ embeds: [embedMsg] });
