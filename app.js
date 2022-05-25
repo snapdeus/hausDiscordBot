@@ -69,7 +69,7 @@ client.on('ready', () => {
     });
 
 
-    // setInterval(() => retrieveEpisodeAndSend(), 5000)
+    setInterval(() => retrieveEpisodeAndSend(), 5000)
 
 
     const retrieveComicAndSend = async () => {
