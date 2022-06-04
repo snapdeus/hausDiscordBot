@@ -26,6 +26,7 @@ exports.starter = [
 
 
 exports.jackingOff = [
+    "cutting a hole in my jorts in order to jerk my gerkin without people noticin",
     "Going on a big date with Rosy Palms",
     "Adjusting my set",
     "Applying the slimy hand brake",
