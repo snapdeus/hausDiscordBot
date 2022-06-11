@@ -426,6 +426,7 @@ exports.jackingOff = [
     "Slapping the FleshGopher",
     "Slapping the pud",
     "Slapping the salami",
+    "Sliding up and down my tube",
     "Slinging the jelly",
     "Smacking the oompa loompa",
     "Smacking the salami",
