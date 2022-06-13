@@ -91,9 +91,9 @@ client.on('ready', () => {
 
 
 client.on('messageCreate', message => {
-    if (message.content.toLowerCase() === 'obamna' && !message.author.bot) {
+    if (message.content.toLowerCase().includes('obamna') && !message.author.bot) {
         message.reply('SODA')
-    } else if (message.content.toLowerCase() === 'soda' && !message.author.bot) {
+    } else if (message.content.toLowerCase().includes('soda') && !message.author.bot) {
         message.reply('Obamna')
     }
 
