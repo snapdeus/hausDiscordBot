@@ -21,6 +21,8 @@ const config = { headers: { 'x-api-key': apiKey } }
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS] });
 client.commands = new Discord.Collection();
 
+client.snipes = new Discord.Collection();
+
 const prefix = "!"
 
 
@@ -118,6 +120,16 @@ client.on('messageCreate', message => {
         console.error(error);
         message.reply('there was an error trying to execute that command!');
     }
+})
+
+client.on('messageDelete', (message, channel) => {
+    client.snipes.set(message.channel.id,
+        {
+            content: message.content,
+            author: message.author,
+            image: message.attachments.first() ? message.attachments.first().proxyURL : null
+        })
+
 })
 
 client.on('guildMemberAdd', async member => {
