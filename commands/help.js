@@ -17,7 +17,7 @@ module.exports = {
             .addField("See if you have warnings", "!warnings <@username>")
             .addField("Gay Comics", "!totalcomics and !comic <number>")
             .addField("Podcast", "!totalepisodes and !episode <number>")
-            .addField("hausBot commands:", '!jackoff, !8ball, !phrase')
+            .addField("hausBot commands:", '!jackoff, !8ball, !phrase, !snipe')
             .addField('Dice games', '/roll and /shipcc')
             .addField('XP and Leaderboard', '/rank and /leaders')
             .addField('Shopping Bag', '/bag, /bread, /dairy, /pasta, /soup')
