@@ -123,9 +123,13 @@ client.on('messageCreate', message => {
 })
 
 client.on('messageDelete', (message, channel) => {
+
+
+
     client.snipes.set(message.channel.id,
         {
             content: message.content,
+            timestamp: message.createdTimestamp,
             author: message.author,
             image: message.attachments.first() ? message.attachments.first().proxyURL : null
         })
