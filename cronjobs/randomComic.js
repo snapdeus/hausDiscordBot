@@ -36,7 +36,7 @@ const generateRandom = (min, max, exclude) => {
 function addComicToCache(num) {
     db.push('comicsArray', num)
     let cache = db.get('comicsArray')
-    if (cache.length > 300) {
+    if (cache.length > 500) {
         cache.shift()
         db.set('comicsArray', cache)
     }

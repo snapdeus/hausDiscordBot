@@ -52,7 +52,7 @@ function addEpisodeToCache(id) {
     db.push('episodesArray', id)
     let cache = db.get('episodesArray')
     // console.log(cache)
-    if (cache.length > 100) {
+    if (cache.length > 110) {
         cache.shift()
         db.set('episodesArray', cache)
     }
