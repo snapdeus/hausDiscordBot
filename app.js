@@ -98,9 +98,9 @@ client.on('messageCreate', message => {
     } else if (message.content.toLowerCase().includes('soda') && !message.author.bot) {
         message.reply('Obamna')
     }
-    if (message.content.toLowerCase().includes('fresh')) {
+    if (message.content.toLowerCase().includes('swag') && !message.author.bot) {
         message.delete();
-        message.channel.send('Do not utter the banned word.');
+        message.channel.send('Do not utter the banned word. Use !snipe to retrieve your message.');
     }
 
 
