@@ -15,6 +15,7 @@
     "dotenv": "^16.0.0",
     "mongoose": "^6.3.1",
     "node-cron": "^3.0.0",
+    "openai": "^3.2.1",
     "quick.db": "^7.1.3"
   }
 }

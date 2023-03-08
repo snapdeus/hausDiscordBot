@@ -69,9 +69,6 @@ client.on('ready', () => {
     cron.schedule('0 15 * * *', () => {
         retrieveEpisodeAndSend();
     });
-    // cron.schedule('*/1 * * * *', () => {
-    //     retrieveEpisodeAndSend();
-    // });
 
 
 
@@ -86,13 +83,13 @@ client.on('ready', () => {
     });
 
 
-    // setInterval(() => retrieveComicAndSend(), 2000)
 
 
 })
 
 
 client.on('messageCreate', message => {
+
     if (message.content.toLowerCase().includes('obamna') && !message.author.bot) {
         message.reply('SODA')
     } else if (message.content.toLowerCase().includes('soda') && !message.author.bot) {
@@ -104,18 +101,23 @@ client.on('messageCreate', message => {
     }
 
 
-
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
     const args = message.content.slice(prefix.length).trim().split(' ');
+
     const commandName = args.shift().toLowerCase();
 
     if (!client.commands.has(commandName)) return;
 
     const command = client.commands.get(commandName);
 
+    // if (command.name === 'chat' && message.author.id !== `584777613411614739`) {
+    //     message.reply("Only for the admin right now...")
+    //     return
+    // }
+
     try {
-        command.execute(client, message, args);
+        command.execute(client, message, args, message.member);
     } catch (error) {
         console.error(error);
         message.reply('there was an error trying to execute that command!');

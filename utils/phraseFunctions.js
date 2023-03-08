@@ -78,7 +78,7 @@ async function createRandomPhrase() {
         randomPhrases.push(sentenceEnders[numEnder].toLowerCase().concat(period))
     }
 
-    console.log(randomPhrases)
+    // console.log(randomPhrases)
 
 
     let phraseArray = [];
