@@ -60,17 +60,17 @@ async function chatWithAi(args, message) {
         }
 
         if (user.memories.length > 8) {
-            console.log('TOO LONG', user.memories)
+
             let tooManyMemories = user.memories.slice(-8);
-            console.log(tooManyMemories)
+
             user.memories = tooManyMemories;
             await user.save()
-            console.log(completion.data, user.memories.length)
+
             return chatResponse
         }
 
         await user.save()
-        console.log('NOT TOO LONG', completion.data, user.memories.length)
+
         return chatResponse
 
     } catch (e) {
