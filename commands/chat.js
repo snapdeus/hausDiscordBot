@@ -12,7 +12,10 @@ module.exports = {
 
     async execute(client, message, args, member) {
 
-
+        if (message.channel.id !== '975202962173485186') {
+            message.channel.send("Please chat with the ai in the 'ai-chat' channel.");
+            return
+        }
 
         let role = member._roles[0]
 
