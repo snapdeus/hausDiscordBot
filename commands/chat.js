@@ -27,9 +27,9 @@ module.exports = {
             } else {
                 try {
                     message.channel.send(`${ await chatWithAi(args, message) }`);
-                } catch {
+                } catch (e) {
                     message.channel.send(`ERROR`);
-                    console.log('chatgpt error')
+                    console.log(e)
                 }
                 if (message.author.username !== "Cletus") {
                     talkedRecently.add(message.author.id);
