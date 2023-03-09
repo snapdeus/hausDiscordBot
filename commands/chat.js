@@ -12,7 +12,9 @@ module.exports = {
     description: 'chat with user',
 
     async execute(client, message, args, member) {
-
+        const username = message.author.username;
+        const userId = message.author.id;
+        const guildId = message.guild.id;
 
         const user = await User.findOne({ userId: userId })
         if (!user) {
