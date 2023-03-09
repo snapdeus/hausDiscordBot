@@ -36,31 +36,42 @@ async function chatWithAi(args, message) {
 
         const prompt = args.join(' ')
 
-
+        user.memories.push(prompt)
 
         const completion = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
-            max_tokens: 500,
+            max_tokens: 400,
+            temperature: 0.7,
             messages: [
                 { role: "system", content: `You are a helpful assistant named hausBot, speaking with ${ username }` },
                 { role: "assistant", content: user.memories.join(" ") },
                 { role: "user", content: prompt }
             ],
         });
+        const chatResponse = completion.data.choices[0].message.content
+        let modifiedResponse;
 
-        user.memories.push(prompt)
-        user.memories.push(completion.data.choices[0].message.content)
-        if (user.memories.length > 20) {
-            user.memories.shift()
+
+        if (chatResponse.length > 400) {
+            modifiedResponse = chatResponse.slice(0, 200)
+            user.memories.push(modifiedResponse)
+        } else {
+            user.memories.push(chatResponse)
+        }
+
+        if (user.memories.length > 8) {
+            console.log('TOO LONG', user.memories)
+            let tooManyMemories = user.memories.slice(-8);
+            console.log(tooManyMemories)
+            user.memories = tooManyMemories;
+            await user.save()
+            console.log(completion.data, user.memories.length)
+            return chatResponse
         }
 
         await user.save()
-
-
-
-
-
-        return completion.data.choices[0].message.content
+        console.log('NOT TOO LONG', completion.data, user.memories.length)
+        return chatResponse
 
     } catch (e) {
         console.log(`api error ${ e }`)
