@@ -11,6 +11,9 @@ module.exports = {
     description: 'chat with user',
 
     async execute(client, message, args, member) {
+
+
+
         let role = member._roles[0]
 
         if (args.length > 200) {
@@ -23,7 +26,7 @@ module.exports = {
                 message.channel.send("Please wait 30s before issuing another prompt.")
             } else {
                 try {
-                    message.channel.send(`${ await chatWithAi(args, message.author.username) }`);
+                    message.channel.send(`${ await chatWithAi(args, message) }`);
                 } catch {
                     message.channel.send(`ERROR`);
                     console.log('chatgpt error')
