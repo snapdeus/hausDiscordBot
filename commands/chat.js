@@ -28,11 +28,13 @@ module.exports = {
                     message.channel.send(`ERROR`);
                     console.log('chatgpt error')
                 }
-                talkedRecently.add(message.author.id);
-                setTimeout(() => {
-                    // Removes the user from the set after a minute
-                    talkedRecently.delete(message.author.id);
-                }, 30000);
+                if (message.author.username !== "Cletus") {
+                    talkedRecently.add(message.author.id);
+                    setTimeout(() => {
+                        // Removes the user from the set after a minute
+                        talkedRecently.delete(message.author.id);
+                    }, 30000);
+                }
             }
 
 
