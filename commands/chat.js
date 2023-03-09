@@ -31,13 +31,13 @@ module.exports = {
                     message.channel.send(`ERROR`);
                     console.log(e)
                 }
-                if (message.author.username !== "Cletus") {
-                    talkedRecently.add(message.author.id);
-                    setTimeout(() => {
-                        // Removes the user from the set after a minute
-                        talkedRecently.delete(message.author.id);
-                    }, 30000);
-                }
+
+                talkedRecently.add(message.author.id);
+                setTimeout(() => {
+                    // Removes the user from the set after a minute
+                    talkedRecently.delete(message.author.id);
+                }, 30000);
+
             }
 
 
