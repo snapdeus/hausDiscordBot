@@ -1,5 +1,6 @@
 
 const { chatWithAi } = require('../src/chatFunctions')
+const User = require('../models/user')
 
 const allowedRoles = ['973978697910599781', '974050213075513405', '973348302055682088', '954022194520932393', '954012026039070741', '973619573754564648', '954034692598951976', '953988101859049553', '973620158423781496', '968476411474112533', '972920088061694053']
 
@@ -11,6 +12,20 @@ module.exports = {
     description: 'chat with user',
 
     async execute(client, message, args, member) {
+
+
+        const user = await User.findOne({ userId: userId })
+        if (!user) {
+            const user = new User({
+                username: `${ username }`,
+                userId: `${ userId }`,
+                guildId: `${ guildId }`,
+                xpOverTime: 0,
+                memories: [],
+            })
+            await user.save()
+            return "Initializing...";
+        }
 
         if (message.channel.id !== '975202962173485186') {
             message.channel.send("Please chat with the ai in the 'ai-chat' channel.");
@@ -24,12 +39,12 @@ module.exports = {
             return
         }
 
-        if (allowedRoles.includes(role)) {
+        if (allowedRoles.includes(role) || user.xpOverTime > 1000) {
             if (talkedRecently.has(message.author.id)) {
                 message.channel.send("Please wait 30s before issuing another prompt.")
             } else {
                 try {
-                    message.channel.send(`${ await chatWithAi(args, message) }`);
+                    message.channel.send(`${ await chatWithAi(args, message, user) }`);
                 } catch (e) {
                     message.channel.send(`ERROR`);
                     console.log(e)

@@ -7,6 +7,7 @@ const UserSchema = new Schema({
     username: String,
     userId: String,
     guildId: String,
+    xpOverTime: Number,
     memories: [],
 
 }, opts)

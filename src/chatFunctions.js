@@ -14,23 +14,12 @@ const openai = new OpenAIApi(configuration);
 
 
 
-async function chatWithAi(args, message) {
+async function chatWithAi(args, message, user) {
     const initiliazing = "Initializing..."
     const username = message.author.username;
     const userId = message.author.id;
     const guildId = message.guild.id;
 
-    const user = await User.findOne({ userId: userId })
-    if (!user) {
-        const user = new User({
-            username: `${ username }`,
-            userId: `${ userId }`,
-            guildId: `${ guildId }`,
-            memories: [],
-        })
-        await user.save()
-        return initiliazing;
-    }
 
     try {
 
