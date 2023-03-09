@@ -23,7 +23,7 @@ module.exports = {
                 message.channel.send("Please wait 1 minute before issuing another prompt.")
             } else {
                 try {
-                    message.channel.send(`${ await chatWithAi(args) }`);
+                    message.channel.send(`${ await chatWithAi(args, message.author.username) }`);
                 } catch {
                     message.channel.send(`ERROR`);
                     console.log('chatgpt error')

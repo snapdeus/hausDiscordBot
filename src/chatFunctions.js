@@ -15,14 +15,15 @@ const memory = [];
 
 
 
-async function chatWithAi(args) {
-    if (memory.length > 5) {
+async function chatWithAi(args, username) {
+    if (memory.length > 6) {
         memory.shift();
     }
-    console.log(memory)
+
     try {
 
         const prompt = args.join(' ')
+
         memory.push(prompt)
 
         const completion = await openai.createChatCompletion({
@@ -34,8 +35,10 @@ async function chatWithAi(args) {
                 { role: "user", content: prompt }
             ],
         });
-        console.log(completion.data)
+
         memory.push(completion.data.choices[0].message.content)
+
+
         return completion.data.choices[0].message.content
 
     } catch (e) {
