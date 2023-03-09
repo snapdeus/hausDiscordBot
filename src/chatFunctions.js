@@ -30,7 +30,7 @@ async function chatWithAi(args, username) {
             model: "gpt-3.5-turbo",
             max_tokens: 500,
             messages: [
-                { role: "system", content: "You are a helpful assistant named hausBot." },
+                { role: "system", content: `You are a helpful assistant named hausBot, speaking with ${ username }` },
                 { role: "assistant", content: memory.join(" ") },
                 { role: "user", content: prompt }
             ],
