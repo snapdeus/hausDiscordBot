@@ -118,6 +118,7 @@ client.on('messageCreate', message => {
 
     try {
         command.execute(client, message, args, message.member);
+
     } catch (error) {
         console.error(error);
         message.reply('there was an error trying to execute that command!');
@@ -143,6 +144,10 @@ client.on('guildMemberAdd', async member => {
 
 
 });
+
+process.on("uncaughtException", (err, origin,) => {
+    console.error(err, origin)
+})
 
 
 client.login(process.env.BOT_TOKEN)
