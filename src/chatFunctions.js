@@ -57,7 +57,7 @@ async function chatWithAi(args, message) {
         await user.save()
 
 
-        console.log(user)
+
 
 
         return completion.data.choices[0].message.content
