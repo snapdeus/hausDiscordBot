@@ -37,6 +37,8 @@ async function chatWithAi(args, message, user) {
                 { role: "user", content: prompt }
             ],
         });
+
+        console.log(completion)
         const chatResponse = completion.data.choices[0].message.content
         let modifiedResponse;
 
