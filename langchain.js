@@ -43,16 +43,18 @@ async function main() {
         const { RecursiveCharacterTextSplitter } = await import("langchain/text_splitter")
         const { BufferWindowMemory } = await import("langchain/memory")
         const { ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate, MessagesPlaceholder, } = await import('langchain/prompts')
-
+        const { ConversationChain } = await import("langchain/chains")
         const chatPrompt = ChatPromptTemplate.fromPromptMessages([
             SystemMessagePromptTemplate.fromTemplate(
-                "The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know."
+                `The AI will say Hold on to your potatoes! {context}`
             ),
             new MessagesPlaceholder("history"),
-            HumanMessagePromptTemplate.fromTemplate("{input}"),
+            HumanMessagePromptTemplate.fromTemplate(`{question}`),
         ]);
+       
 
-        const memory = new BufferWindowMemory({ k: 5 });
+        const memory = new BufferWindowMemory({ k: 5, memoryKey: "history" });
+
         const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 1 });
         const docs = await textSplitter.createDocuments([review]);
 
@@ -83,8 +85,8 @@ async function main() {
             new OpenAIEmbeddings()
         );
 
-        const question = "Who was Kurt Cobain"
-
+        const question = "Hello I'm Frank"
+        // const getHistory = await vectorStore.similaritySearch(question, 1);
         const chain = await ChatVectorDBQAChain.fromLLM(
             model,
             vectorStore,
@@ -92,41 +94,64 @@ async function main() {
             {
                 prompt: chatPrompt,
                 returnSourceDocuments: false,
-                k: 5
+                k: 2
             }
         );
 
+        // const chain = await ConversationChain(
+        //     model,
+        //     memory,
+        //     {
+        //         prompt: chatPrompt,
+        //         returnSourceDocuments: false,
+        //         k: 2
+        //     }
+        // )
 
-        // const response = await chain.call({
-        //     question: question,
-        //     chat_history: []
-        // });
+        const response = await chain.call({
+            inputKey: "question",
+            question: question,
+            chat_history: [],
 
-        // console.log(response)
-        // let chatHistory = question + response["text"];
-        // const chatHistoryDocs = await textSplitter.createDocuments([chatHistory]);
+        });
 
+        console.log(response)
+        let chatHistory = question + response["text"];
+        // let chatHistoryDocs = await textSplitter.createDocuments([chatHistory]);
 
-        // const followUpQuestion = "Who was Kris Novoselic"
-        // const followUpRes = await chain.call({
-        //     question: followUpQuestion,
-        //     chat_history: [...chatHistory],
-        // });
-        // chatHistory = followUpQuestion + followUpRes["text"];
-        // console.log(followUpRes)
+        // await PineconeStore.fromDocuments(index, chatHistoryDocs, new OpenAIEmbeddings(), "text");
+        const followUpQuestion = "what is my name?"
 
-        // const followUpQuestion2 = "What was the first question I asked you?"
+        const followUpRes = await chain.call({
+            inputKey: "question",
+            question: followUpQuestion,
+            chat_history: [...chatHistory],
+
+        });
+
+        chatHistory = followUpQuestion + followUpRes["text"];
+        console.log(followUpRes)
+        // chatHistoryDocs = await textSplitter.createDocuments([chatHistory]);
+
+        // await PineconeStore.fromDocuments(index, chatHistoryDocs, new OpenAIEmbeddings(), "text");
+        console.log(memory)
+        // const followUpQuestion2 = "What is the current context?"
         // const followUpRes2 = await chain.call({
         //     question: followUpQuestion2,
+        //     inputKey: "question",
         //     chat_history: [...chatHistory],
+        //     context: [...chatHistory]
         // });
+        // chatHistoryDocs = await textSplitter.createDocuments([chatHistory]);
 
+        // await PineconeStore.fromDocuments(index, chatHistoryDocs, new OpenAIEmbeddings(), "text");
         // console.log(followUpRes2)
+        // console.log('---------------------')
         /*uncomment below to test similarity search */
-        const query = 'What was the first question I asked you?';
-        const results = await vectorStore.similaritySearch(query, 5);
+        // const query = 'snapdeus';
+        // const results = await vectorStore.similaritySearch(query, 1);
 
-        console.log("results", results);
+        // console.log("results", results);
 
     } catch (e) {
         console.log(e)
