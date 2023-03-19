@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { PineconeClient } = require('@pinecone-database/pinecone')
+// const { PineconeClient } = require('@pinecone-database/pinecone')
 //FIX FOR BUG ONNX RUNTIME WEB 
 /* https://github.com/xenova/transformers.js/issues/4 */
 global.self = global;
@@ -10,16 +10,16 @@ env.onnx.wasm.numThreads = 1
 async function main() {
     try {
 
-        const pinecone = new PineconeClient();
-        await pinecone.init({
-            environment: process.env.PINECONE_SERVER,
-            apiKey: process.env.PINECONE_API_KEY,
-        });
-        const index = pinecone.Index("testindex");
+        // const pinecone = new PineconeClient();
+        // await pinecone.init({
+        //     environment: process.env.PINECONE_SERVER,
+        //     apiKey: process.env.PINECONE_API_KEY,
+        // });
+        // const index = pinecone.Index("testindex");
         let sentences = ["There is a dog on my lawn", "I've got to go back to work.", "There is a dog on my lawn"]
         let embedder = await pipeline('embeddings', 'sentence-transformers/all-MiniLM-L6-v2')
         let output = await embedder(sentences)
-        console.log(output[0].length)
+        console.log(output)
         //   Compute pairwise cosine similarity
         // for (let i = 0; i < sentences.length; ++i) {
         //     for (let j = i + 1; j < sentences.length; ++j) {

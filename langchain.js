@@ -44,24 +44,77 @@ async function main() {
         const { BufferWindowMemory } = await import("langchain/memory")
         const { ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate, MessagesPlaceholder, } = await import('langchain/prompts')
         const { ConversationChain } = await import("langchain/chains")
-        const chatPrompt = ChatPromptTemplate.fromPromptMessages([
-            SystemMessagePromptTemplate.fromTemplate(
-                `The AI will say Hold on to your potatoes! {context}`
-            ),
-            new MessagesPlaceholder("history"),
-            HumanMessagePromptTemplate.fromTemplate(`{question}`),
-        ]);
-       
+        // const chatPrompt = ChatPromptTemplate.fromPromptMessages([
+        //     SystemMessagePromptTemplate.fromTemplate(
+        //         `The AI will say Hold on to your potatoes! {context}`
+        //     ),
+        //     new MessagesPlaceholder("{history}"),
+        //     HumanMessagePromptTemplate.fromTemplate(`{question}`),
+        // ]);
 
-        const memory = new BufferWindowMemory({ k: 5, memoryKey: "history" });
 
-        const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 1 });
-        const docs = await textSplitter.createDocuments([review]);
+        // const memory = new BufferWindowMemory({ k: 10, memoryKey: "history" });
+
+        // const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 1 });
+        // const docs = await textSplitter.createDocuments([review]);
 
 
         // const doc = new Document({ pageContent: "Hello, my name is Charles.  I am a human boy who lives in New Orleans. I like fish!" })
 
         const model = new ChatOpenAI({ temperature: 0.9, openAIApiKey: process.env.OPENAI_API_KEY })
+
+
+        const chatPrompt = ChatPromptTemplate.fromPromptMessages([
+            SystemMessagePromptTemplate.fromTemplate(
+                "The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know."
+            ),
+            new MessagesPlaceholder("history"),
+            HumanMessagePromptTemplate.fromTemplate("{input}"),
+        ]);
+
+        const chain = new ConversationChain({
+            memory: new BufferWindowMemory({ k: 10, returnMessages: true }),
+            prompt: chatPrompt,
+            llm: model,
+        });
+
+        const response = await chain.call({
+            input: "Hello how are you? I'm dave",
+        });
+
+        console.log(response);
+
+        const response2 = await chain.call({
+            input: "hey thanks for responding. do you remember my name?",
+        });
+
+        console.log(response2);
+
+        // const response3 = await chain.call({
+        //     input: "Can you come up with six funny scenarios why I might need to take a year off work? Please be verbose",
+        // });
+
+        // console.log(response3);
+
+        // const response4 = await chain.call({
+        //     input: "Can you come up with six outrageous scenarios why my boat capsized? Please be verbose",
+        // });
+
+        // console.log(response4);
+
+
+
+        // const response5 = await chain.call({
+        //     input: "I liked the 5th funny scenario about work. Please repeat that but change it to a screenplay style dialogue starring me and you.",
+        // });
+
+        // console.log(response5);
+
+
+
+
+        ///////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////
         // const embeddings = new OpenAIEmbeddings();
         // const res = await embeddings.embedQuery(text);
 
@@ -70,71 +123,63 @@ async function main() {
         //         "Translate this sentence from English to French. I love programming."
         //     ),
         // ]);
-        const pinecone = new PineconeClient();
-        await pinecone.init({
-            environment: process.env.PINECONE_SERVER,
-            apiKey: process.env.PINECONE_API_KEY,
-        });
-        const index = pinecone.Index("testindex");
+        // const pinecone = new PineconeClient();
+        // await pinecone.init({
+        //     environment: process.env.PINECONE_SERVER,
+        //     apiKey: process.env.PINECONE_API_KEY,
+        // });
+        // const index = pinecone.Index("testindex");
 
         // this adds doc to the index
         // const vectorStore = await PineconeStore.fromDocuments(index, docs, new OpenAIEmbeddings(), "text");
 
-        const vectorStore = await PineconeStore.fromExistingIndex(
-            index,
-            new OpenAIEmbeddings()
-        );
+        // const vectorStore = await PineconeStore.fromExistingIndex(
+        //     index,
+        //     new OpenAIEmbeddings()
+        // );
 
-        const question = "Hello I'm Frank"
+        // const question = "Tell me what you know about Tyler Rivers"
         // const getHistory = await vectorStore.similaritySearch(question, 1);
-        const chain = await ChatVectorDBQAChain.fromLLM(
-            model,
-            vectorStore,
-            memory,
-            {
-                prompt: chatPrompt,
-                returnSourceDocuments: false,
-                k: 2
-            }
-        );
-
-        // const chain = await ConversationChain(
+        // const chain = await ChatVectorDBQAChain.fromLLM(
         //     model,
+        //     vectorStore,
         //     memory,
         //     {
-        //         prompt: chatPrompt,
+        //         // prompt: chatPrompt,
         //         returnSourceDocuments: false,
         //         k: 2
         //     }
-        // )
+        // );
 
-        const response = await chain.call({
-            inputKey: "question",
-            question: question,
-            chat_history: [],
 
-        });
 
-        console.log(response)
-        let chatHistory = question + response["text"];
+        // const response = await chain.call({
+        //     inputKey: "question",
+        //     question: question,
+        //     chat_history: [getHistory],
+
+        // });
+
+        // console.log(response)
+        // let chatHistory = question + response["text"];
         // let chatHistoryDocs = await textSplitter.createDocuments([chatHistory]);
 
         // await PineconeStore.fromDocuments(index, chatHistoryDocs, new OpenAIEmbeddings(), "text");
-        const followUpQuestion = "what is my name?"
+        // const followUpQuestion = "What was the first question I asked you?"
 
-        const followUpRes = await chain.call({
-            inputKey: "question",
-            question: followUpQuestion,
-            chat_history: [...chatHistory],
+        // const followUpRes = await chain.call({
+        //     inputKey: "question",
+        //     question: followUpQuestion,
+        //     chat_history: [...chatHistory],
 
-        });
+        // });
 
-        chatHistory = followUpQuestion + followUpRes["text"];
-        console.log(followUpRes)
+        // chatHistory = followUpQuestion + followUpRes["text"];
+        // console.log(followUpRes)
         // chatHistoryDocs = await textSplitter.createDocuments([chatHistory]);
 
         // await PineconeStore.fromDocuments(index, chatHistoryDocs, new OpenAIEmbeddings(), "text");
-        console.log(memory)
+
         // const followUpQuestion2 = "What is the current context?"
         // const followUpRes2 = await chain.call({
         //     question: followUpQuestion2,
