@@ -20,19 +20,13 @@ In addition to their musical achievements, Nirvana's impact on popular culture h
 
 async function main() {
     try {
-        const { OpenAI } = await import("langchain/llms")
         const { ChatOpenAI } = await import("langchain/chat_models");
-        const { HumanChatMessage } = await import('langchain/schema');
         const { OpenAIEmbeddings } = await import("langchain/embeddings");
         const { PineconeStore } = await import("langchain/vectorstores");
         const { PineconeClient } = await import("@pinecone-database/pinecone");
-        const { Document } = await import("langchain/document");
         const { ChatVectorDBQAChain } = await import("langchain/chains")
         const { RecursiveCharacterTextSplitter } = await import("langchain/text_splitter")
-        const { BufferWindowMemory } = await import("langchain/memory")
-        const { ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate, MessagesPlaceholder, } = await import('langchain/prompts')
-        const { CallbackManager, LangChainTracer, ConsoleCallbackHandler, } = await import('langchain/callbacks')
-        const { LLMResult } = await import('langchain/schema')
+        const { CallbackManager } = await import('langchain/callbacks')
 
         const callbackManager = CallbackManager.fromHandlers({
             handleLLMStart: async (llm, prompts) => {
@@ -50,49 +44,23 @@ async function main() {
 
 
         const PINECONE_NAME_SPACE = "TESTINDEX"
-        const question_generator_template = `The following is a friendly conversation between a human and an AI. The AI is talkative. If the AI does not know the answer to a question, it will answer anyway.
-        Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
-        Chat History:
-        {chat_history}
-        Follow Up Input: {question}
-        Standalone question:`;
 
-        const qa_template = `
-        The following is a friendly conversation between a human and an AI. The AI is talkative. If the AI does not know the answer to a question, it will answer anyway!.
-        Use the following pieces of context to inform the question at the end. If the context doesn't provide an answer, you are allowed to use your full abilities to try to determine the answer.
-        {chat_history}
-        Question: {question}
-        Helpful Answer:`;
 
-        // const chatPrompt = ChatPromptTemplate.fromPromptMessages([
-        //     SystemMessagePromptTemplate.fromTemplate(
-        //         `The AI will say Hold on to your potatoes! {context}`
-        //     ),
-        //     new MessagesPlaceholder("chat_history"),
-        //     HumanMessagePromptTemplate.fromTemplate(`{question}`),
-        // ]);
 
 
         const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 1 });
         const docs = await textSplitter.createDocuments([review]);
 
 
-        // const doc = new Document({ pageContent: "Hello, my name is Charles.  I am a human boy who lives in New Orleans. I like fish!" })
 
         const model = new ChatOpenAI({
             temperature: 0.2,
             openAIApiKey: process.env.OPENAI_API_KEY,
-            verbose: true,
-            callbackManager,
+            // verbose: true,
+            // callbackManager,
         })
-        // const embeddings = new OpenAIEmbeddings();
-        // const res = await embeddings.embedQuery(text);
 
-        // const response = await chat.call([
-        //     new HumanChatMessage(
-        //         "Translate this sentence from English to French. I love programming."
-        //     ),
-        // ]);
+
         const pinecone = new PineconeClient();
         await pinecone.init({
             environment: process.env.PINECONE_SERVER,
@@ -101,7 +69,7 @@ async function main() {
         const index = pinecone.Index("testindex");
 
 
-        // await PineconeStore.fromDocuments(index, docs, new OpenAIEmbeddings(), "text",PINECONE_NAME_SPACE);
+        // await PineconeStore.fromDocuments(index, docs, new OpenAIEmbeddings(), "text", PINECONE_NAME_SPACE);
 
         const vectorStore = await PineconeStore.fromExistingIndex(
             index,
@@ -113,16 +81,16 @@ async function main() {
 
 
 
-        // await PineconeStore.fromDocuments(index, chatHistoryDocs, new OpenAIEmbeddings(), "text", PINECONE_NAME_SPACE);
 
-        const question = "What is my name? My game?"
-        // const getHistory = await vectorStore.similaritySearch(question, 1);
+        const question = "Nirva"
+        const getHistory = await vectorStore.similaritySearch(question, 1);
+        console.log(getHistory)
         const chain = await ChatVectorDBQAChain.fromLLM(
             model,
             vectorStore,
 
             {
-                returnSourceDocuments: true,
+                returnSourceDocuments: false,
                 k: 2
             }
         );

@@ -10,12 +10,11 @@ Chat History:
 Follow Up Input: {question}
 Answer:`;
 
-
-const qa_template = `If the AI does not know the answer to a question, or if it is not a question, the ai will respond anyway.
-Use the following pieces of context to inform the question at the end. If the context doesn't provide an answer, you are allowed to use your full abilities to try to determine the answer. If it is a statement at the end, use any semantic meaning from the statement to arrive at a way to continue the conversation.
-Context: {context}
+const qa_template = `Do not speak about being an AI language model. You are a hausBot. If hausBot does not know the answer to a question, or if it is not a question, hausBot will respond anyway.
+Use the following Chat History and pieces of context that were returned via semantic search to inform the question or statement at the end. If the chat history or context doesn't provide an answer to the question, you are allowed to use your full abilities to try to determine the answer. If it is a statement at the end, use any semantic meaning from the statement to arrive at a way to continue the conversation. 
 Chat History: {chat_history}
-Question: {question}
+Context: {context}
+Question or Statement: {question}
 Helpful Answer:`;
 export class ChatVectorDBQAChain extends BaseChain {
     get inputKeys() {
