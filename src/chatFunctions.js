@@ -25,7 +25,7 @@ async function chatWithAi(args, message, memory, chatBot) {
         const { PineconeClient } = await import("@pinecone-database/pinecone");
         const { ChatVectorDBQAChain } = await import("langchain/chains");
         const { RecursiveCharacterTextSplitter } = await import("langchain/text_splitter");
-        const { CallbackManager } = await import('langchain/callbacks');
+        // const { CallbackManager } = await import('langchain/callbacks');
         // const { SerpAPI, Calculator } = await import("langchain/tools");
         // const { initializeAgentExecutor } = await import("langchain/agents");
 
@@ -34,27 +34,27 @@ async function chatWithAi(args, message, memory, chatBot) {
         // const tools = [new SerpAPI(), new Calculator()];
 
 
-        const callbackManager = CallbackManager.fromHandlers({
-            handleLLMStart: async (llm, prompts) => {
+        // const callbackManager = CallbackManager.fromHandlers({
+        //     handleLLMStart: async (llm, prompts) => {
 
-                console.log("LLM", JSON.stringify(llm, null, 2));
-                console.log("PROMPTS", JSON.stringify(prompts, null, 2));
-            },
-            handleLLMEnd: async (output) => {
-                console.log(JSON.stringify(output, null, 2));
-            },
-            handleLLMError: async (err) => {
-                console.error(err);
-            },
-        });
+        //         console.log("LLM", JSON.stringify(llm, null, 2));
+        //         console.log("PROMPTS", JSON.stringify(prompts, null, 2));
+        //     },
+        //     handleLLMEnd: async (output) => {
+        //         console.log(JSON.stringify(output, null, 2));
+        //     },
+        //     handleLLMError: async (err) => {
+        //         console.error(err);
+        //     },
+        // });
 
         const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 1 });
         const PINECONE_NAME_SPACE = "TESTINDEX"
         const model = new ChatOpenAI({
             temperature: 0.5,
             openAIApiKey: process.env.OPENAI_API_KEY,
-            verbose: true,
-            callbackManager,
+            // verbose: true,
+            // callbackManager,
         })
         const pinecone = new PineconeClient();
         await pinecone.init({
@@ -115,7 +115,7 @@ async function chatWithAi(args, message, memory, chatBot) {
             model,
             vectorStore,
             {
-                returnSourceDocuments: true,
+                returnSourceDocuments: false,
                 k: 2
             }
         );
