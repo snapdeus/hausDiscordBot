@@ -3,7 +3,7 @@ require('dotenv').config()
 const { Configuration, OpenAIApi } = require("openai");
 const Discord = require('discord.js');
 const { v4: uuidv4 } = require('uuid');
-
+const short_term_memory = 10;
 
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
@@ -26,6 +26,14 @@ async function chatWithAi(args, message, memory, chatBot) {
         const { ChatVectorDBQAChain } = await import("langchain/chains");
         const { RecursiveCharacterTextSplitter } = await import("langchain/text_splitter");
         const { CallbackManager } = await import('langchain/callbacks');
+        // const { SerpAPI, Calculator } = await import("langchain/tools");
+        // const { initializeAgentExecutor } = await import("langchain/agents");
+
+
+        // process.env.LANGCHAIN_HANDLER = "langchain";
+        // const tools = [new SerpAPI(), new Calculator()];
+
+
         const callbackManager = CallbackManager.fromHandlers({
             handleLLMStart: async (llm, prompts) => {
 
@@ -43,7 +51,7 @@ async function chatWithAi(args, message, memory, chatBot) {
         const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 1 });
         const PINECONE_NAME_SPACE = "TESTINDEX"
         const model = new ChatOpenAI({
-            temperature: 0.2,
+            temperature: 0.5,
             openAIApiKey: process.env.OPENAI_API_KEY,
             verbose: true,
             callbackManager,
@@ -74,8 +82,32 @@ async function chatWithAi(args, message, memory, chatBot) {
         for (mem of memory.memories) {
             oldMemoriesArray.push(`${ mem.userName } said: ${ mem.userStatement }.  ${ mem.aiName } replied ${ mem.aiStatement }.`)
         }
-        const oldMemories = oldMemoriesArray.join(" ")
-        const chatHistoryDocs = await textSplitter.createDocuments(oldMemoriesArray);
+
+        const memoryObject = {
+            oldMemories: oldMemoriesArray.join(" "),
+            loadMemoryVariables: function () {
+                return { memoryKey: "chat_history" }
+            }
+        }
+        // const oldMemories = oldMemoriesArray.join(" ")
+
+
+        //MAYBE DO THIS IN AN IF STATEMENT?
+
+
+
+
+
+        //AGENT STUFF
+        // const executor = await initializeAgentExecutor(
+        //     tools,
+        //     model,
+        //     "chat-conversational-react-description",
+        //     true
+        // );
+        // executor.memory = memoryObject
+        // const input0 = `"hi, i am bob"`;
+        // const response = await executor.call({ input: input0, chat_history: [memoryObject.chat_history] });
 
 
 
@@ -91,7 +123,7 @@ async function chatWithAi(args, message, memory, chatBot) {
         const response = await chain.call({
 
             question: prompt,
-            chat_history: [oldMemories],
+            chat_history: [memoryObject.oldMemories],
 
         });
 
@@ -99,7 +131,7 @@ async function chatWithAi(args, message, memory, chatBot) {
 
 
 
-
+        //old way of doing, with openai API
         // const completion = await openai.createChatCompletion({
         //     model: "gpt-3.5-turbo",
         //     max_tokens: 750,
@@ -113,6 +145,8 @@ async function chatWithAi(args, message, memory, chatBot) {
 
         // console.log(completion.config)
         // const chatResponse = completion.data.choices[0].message.content
+
+
         const chatResponse = response['text']
 
         //BUILD CHAT MEMEORY
@@ -133,7 +167,8 @@ async function chatWithAi(args, message, memory, chatBot) {
         //then short term will be reset
         console.log(memory.memories.length)
         //TRIM TOTAL MEMORIES TO BE NO MORE THAN 20
-        if (memory.memories.length > 5) {
+        if (memory.memories.length > short_term_memory) {
+            const chatHistoryDocs = await textSplitter.createDocuments(oldMemoriesArray);
             await PineconeStore.fromDocuments(
                 chatHistoryDocs,
                 new OpenAIEmbeddings(),
@@ -146,7 +181,7 @@ async function chatWithAi(args, message, memory, chatBot) {
             // let tooManyMemories = memory.memories.slice(-20);
             // memory.memories = tooManyMemories;
             //we will instead empty the array
-            memory.memories = [];
+            memory.memories = memory.memories.splice(-(short_term_memory - 5));
         }
 
         await memory.save()
