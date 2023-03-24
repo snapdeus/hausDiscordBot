@@ -23,9 +23,9 @@ async function chatWithAi(args, message, memory, chatBot) {
         const { OpenAIEmbeddings } = await import("langchain/embeddings");
         const { PineconeStore } = await import("langchain/vectorstores");
         const { PineconeClient } = await import("@pinecone-database/pinecone");
-        const { ChatVectorDBQAChain } = await import("langchain/chains")
-        const { RecursiveCharacterTextSplitter } = await import("langchain/text_splitter")
-        const { CallbackManager } = await import('langchain/callbacks')
+        const { ChatVectorDBQAChain } = await import("langchain/chains");
+        const { RecursiveCharacterTextSplitter } = await import("langchain/text_splitter");
+        const { CallbackManager } = await import('langchain/callbacks');
         const callbackManager = CallbackManager.fromHandlers({
             handleLLMStart: async (llm, prompts) => {
 
@@ -45,8 +45,8 @@ async function chatWithAi(args, message, memory, chatBot) {
         const model = new ChatOpenAI({
             temperature: 0.2,
             openAIApiKey: process.env.OPENAI_API_KEY,
-            // verbose: true,
-            // callbackManager,
+            verbose: true,
+            callbackManager,
         })
         const pinecone = new PineconeClient();
         await pinecone.init({
@@ -54,13 +54,19 @@ async function chatWithAi(args, message, memory, chatBot) {
             apiKey: process.env.PINECONE_API_KEY,
         });
         const index = pinecone.Index("testindex");
-        const vectorStore = await PineconeStore.fromExistingIndex(
-            index,
-            new OpenAIEmbeddings(),
-            'text',
-            PINECONE_NAME_SPACE
-        );
+        //OLD WAY OF DOING THE PINECONE DBCONFIG
+        // const vectorStore = await PineconeStore.fromExistingIndex(
+        //     index,
+        //     new OpenAIEmbeddings(),
+        //     'text',
+        //     PINECONE_NAME_SPACE
+        // );
 
+        const vectorStore = await PineconeStore.fromExistingIndex(
+            new OpenAIEmbeddings(),
+            { pineconeIndex: index, textKey: "text", namespace: PINECONE_NAME_SPACE, },
+
+        );
         const prompt = args.join(' ')
 
         const oldMemoriesArray = [];
@@ -70,15 +76,14 @@ async function chatWithAi(args, message, memory, chatBot) {
         }
         const oldMemories = oldMemoriesArray.join(" ")
         const chatHistoryDocs = await textSplitter.createDocuments(oldMemoriesArray);
-        // const question = "Nirva"
-        const getHistory = await vectorStore.similaritySearch(prompt, 1);
+
+
 
         const chain = await ChatVectorDBQAChain.fromLLM(
             model,
             vectorStore,
-
             {
-                returnSourceDocuments: false,
+                returnSourceDocuments: true,
                 k: 2
             }
         );
@@ -128,8 +133,15 @@ async function chatWithAi(args, message, memory, chatBot) {
         //then short term will be reset
         console.log(memory.memories.length)
         //TRIM TOTAL MEMORIES TO BE NO MORE THAN 20
-        if (memory.memories.length > 20) {
-            await PineconeStore.fromDocuments(index, chatHistoryDocs, new OpenAIEmbeddings(), "text", PINECONE_NAME_SPACE);
+        if (memory.memories.length > 5) {
+            await PineconeStore.fromDocuments(
+                chatHistoryDocs,
+                new OpenAIEmbeddings(),
+                {
+                    pineconeIndex: index,
+                    textKey: "text",
+                    namespace: PINECONE_NAME_SPACE,
+                },);
             //instead of setting array to max of twenty as below
             // let tooManyMemories = memory.memories.slice(-20);
             // memory.memories = tooManyMemories;
