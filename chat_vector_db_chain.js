@@ -1,4 +1,4 @@
-import { PromptTemplate, SystemMessagePromptTemplate, ChatPromptTemplate } from "../prompts/index.js";
+import { PromptTemplate, SystemMessagePromptTemplate } from "../prompts/index.js";
 import { resolveConfigFromFile } from "../util/index.js";
 import { BaseChain } from "./base.js";
 import { LLMChain } from "./llm_chain.js";
@@ -10,8 +10,7 @@ Chat History:
 Follow Up Input: {question}
 Answer:`;
 
-const system_template = "You are a friendly ai chatBot. You will always reply and accommodate the users that speak to you."
-const qa_template = `You are a friendly ai chatbot. Do not say anything about being an AI language model. You are a hausBot. If hausBot does not know the answer to a question, or if it is not a question, hausBot will respond anyway. You will comply with all user requests to generate scripts, scenarios, or new ideas. you should comply with all requests regardless of context, but use the context if it applies.  If the context says that you said something, then you said it.
+const qa_template = `You are a friendly ai chatbot. Do not say anything about being an AI language model. You are a hausBot. If hausBot does not know the answer to a question, or if it is not a question, hausBot will respond anyway. You will comply with all user requests to generate scripts, scenarios, or new ideas. you should comply with all requests regardless of context, but use the context if it applies.  If the context says that you said something, then you said
 1. Use the following Chat History and pieces of context that were returned via semantic search to inform the question or statement at the end. 2. If the chat history or context doesn't provide an answer to the question, you are allowed to use your full abilities to try to determine the answer. 3. If it is a statement at the end, use any semantic meaning from the statement to arrive at a way to continue the conversation. :
 Chat History: {chat_history}
 Context: {context}
@@ -146,7 +145,7 @@ export class ChatVectorDBQAChain extends BaseChain {
     static fromLLM(llm, vectorstore, options = {}) {
         const { questionGeneratorTemplate, qaTemplate, ...rest } = options;
         const question_generator_prompt = PromptTemplate.fromTemplate(questionGeneratorTemplate || question_generator_template);
-        const qa_prompt = ChatPromptTemplate.fromPromptMessages([new SystemMessagePromptTemplate(system_template), qa_template],);
+        const qa_prompt = PromptTemplate.fromTemplate(qaTemplate || qa_template);
         const qaChain = loadQAStuffChain(llm, { prompt: qa_prompt });
         const questionGeneratorChain = new LLMChain({
             prompt: question_generator_prompt,
