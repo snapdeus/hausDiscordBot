@@ -16,6 +16,14 @@ const { toPrepo } = require('../resources/toPrepo')
 const { useful } = require('../resources/useful')
 const { withPrepo } = require('../resources/withPrepo')
 
+// const { vectorDb } = require('./Untitled-1')
+
+// for (entry of vectorDb[0].matches) {
+//     let csvArray = [];
+//     csvArray.push(entry.id)
+//     console.log(csvArray.join(", "))
+// }
+
 
 const Discord = require('discord.js');
 

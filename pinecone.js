@@ -41,11 +41,25 @@ async function main() {
         const indexName = 'testindex'
 
         await client.init({
-            apiKey: process.env.PINECONE_API_KEY,
-            environment: process.env.PINECONE_SERVER,
+            apiKey: process.env.TESTPINECONE_API_KEY,
+            environment: process.env.TESTPINECONE_SERVER,
         });
         const index = client.Index(indexName)
-        console.log(index)
+
+
+        // const ids = ["db8f9356-3643-4765-9172-301f616c0bbb",
+        //     "37ebaf93-3eb1-4189-a2b3-5a6e855a7c99",
+        //     "6a79594c-6ccb-42bd-aad1-e5dd7dbed235",
+        //     "e3ed47f6-ae95-44d4-b4f5-06588e8b5cdf",
+        //     "b1603c94-e8a8-40dc-a35c-2367a25bcfe4",
+        //     "72a710a3-cfbc-48af-9d97-ede73392a643",
+        //     "a930b0f0-c382-4776-a72d-eef508ff8c09",
+        //  ,]
+
+        // await index.delete1({
+        //     ids: ids,
+        //     namespace: 'TESTINDEX'
+        // })
     } catch (e) {
         console.log(e)
     }
