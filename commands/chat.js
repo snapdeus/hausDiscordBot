@@ -79,7 +79,7 @@ module.exports = {
             } else {
                 try {
                     const chatBot = client.user.username;
-                    console.log(chatBot)
+                    // console.log(chatBot)
                     message.channel.send(`${ await chatWithAi(args, message, memory, chatBot) }`);
                 } catch (e) {
                     message.channel.send(`ERROR`);
