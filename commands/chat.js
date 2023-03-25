@@ -68,8 +68,8 @@ module.exports = {
 
         let role = member._roles[0]
 
-        if (args.length > 250) {
-            message.channel.send(`Please limit the length your prompt to 250 characters.`);
+        if (args.length > 750) {
+            message.channel.send(`Please limit the length your prompt to 750 characters.`);
             return
         }
 
