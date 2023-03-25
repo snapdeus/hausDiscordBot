@@ -34,32 +34,32 @@ async function chatWithAi(args, message, memory, chatBot) {
         // const tools = [new SerpAPI(), new Calculator()];
 
 
-        const callbackManager = CallbackManager.fromHandlers({
-            handleLLMStart: async (llm, prompts) => {
+        // const callbackManager = CallbackManager.fromHandlers({
+        //     handleLLMStart: async (llm, prompts) => {
 
-                console.log("LLM", JSON.stringify(llm, null, 2));
-                console.log("PROMPTS", JSON.stringify(prompts, null, 2));
-            },
-            handleLLMEnd: async (output) => {
-                console.log(JSON.stringify(output, null, 2));
-            },
-            handleLLMError: async (err) => {
-                console.error(err);
-            },
-        });
+        //         console.log("LLM", JSON.stringify(llm, null, 2));
+        //         console.log("PROMPTS", JSON.stringify(prompts, null, 2));
+        //     },
+        //     handleLLMEnd: async (output) => {
+        //         console.log(JSON.stringify(output, null, 2));
+        //     },
+        //     handleLLMError: async (err) => {
+        //         console.error(err);
+        //     },
+        // });
 
         const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 1 });
         const PINECONE_NAME_SPACE = "TESTINDEX"
         const model = new ChatOpenAI({
             temperature: 1.0,
             openAIApiKey: process.env.OPENAI_API_KEY,
-            verbose: true,
-            callbackManager,
+            // verbose: true,
+            // callbackManager,
         })
         const pinecone = new PineconeClient();
         await pinecone.init({
-            environment: process.env.TESTPINECONE_SERVER,
-            apiKey: process.env.TESTPINECONE_API_KEY,
+            environment: process.env.PINECONE_SERVER,
+            apiKey: process.env.PINECONE_API_KEY,
         });
         const index = pinecone.Index("testindex");
         //OLD WAY OF DOING THE PINECONE DBCONFIG
@@ -115,7 +115,7 @@ async function chatWithAi(args, message, memory, chatBot) {
             model,
             vectorStore,
             {
-                returnSourceDocuments: true,
+                returnSourceDocuments: false,
                 k: 4
             }
         );
@@ -165,7 +165,7 @@ async function chatWithAi(args, message, memory, chatBot) {
         //We want short term memory to be an array of 20 memories
         //after we reach 20 memories, we are going to store those 20 memories in the long term memory
         //then short term will be reset
-        console.log(memory.memories.length)
+        // console.log(memory.memories.length)
         //TRIM TOTAL MEMORIES TO BE NO MORE THAN 20
         if (memory.memories.length > short_term_memory) {
             const chatHistoryDocs = await textSplitter.createDocuments(oldMemoriesArray);
