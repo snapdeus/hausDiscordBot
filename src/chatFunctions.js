@@ -58,8 +58,8 @@ async function chatWithAi(args, message, memory, chatBot) {
         })
         const pinecone = new PineconeClient();
         await pinecone.init({
-            environment: process.env.PINECONE_SERVER,
-            apiKey: process.env.PINECONE_API_KEY,
+            environment: process.env.TESTPINECONE_SERVER,
+            apiKey: process.env.TESTPINECONE_API_KEY,
         });
         const index = pinecone.Index("testindex");
         //OLD WAY OF DOING THE PINECONE DBCONFIG

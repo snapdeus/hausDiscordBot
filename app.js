@@ -62,7 +62,7 @@ client.on('ready', () => {
 
     const retrieveEpisodeAndSend = async () => {
         const { embedMsg } = await randomEpisodes.getRandomShow();
-        const channel = client.channels.cache.get(process.env.EPISODE_CHANNEL);
+        const channel = client.channels.cache.get(process.env.TESTEPISODE_CHANNEL);
         channel.send({ embeds: [embedMsg] });
     };
 
@@ -74,7 +74,7 @@ client.on('ready', () => {
 
     const retrieveComicAndSend = async () => {
         const { embedMsg } = await randomComic.getRandomComic();
-        const channel = client.channels.cache.get(process.env.COMIC_CHANNEL);
+        const channel = client.channels.cache.get(process.env.TESTCOMIC_CHANNEL);
         channel.send({ embeds: [embedMsg] });
     }
 
@@ -149,4 +149,4 @@ process.on("uncaughtException", (err, origin,) => {
 })
 
 
-client.login(process.env.BOT_TOKEN)
+client.login(process.env.TESTBOT_TOKEN)
