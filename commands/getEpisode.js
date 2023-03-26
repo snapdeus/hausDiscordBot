@@ -40,6 +40,7 @@ module.exports = {
                 const epNumber = parseInt(args[0]);
                 const numEps = await res.data.data[0].attributes.number;
                 const episode = await res.data.data.filter(ep => ep.attributes.number === epNumber)
+                console.log
                 let totalPages = (Math.ceil(numEps / 10))
                 let pageNumber;
                 if (epNumber % 10 >= numEps % 10 || epNumber % 10 === 0) {
@@ -57,7 +58,7 @@ module.exports = {
                     .setTitle(episode[0].attributes.title)
                     .setURL(`https://hausofdecline.com/episodes/${ pageNumber }/${ episode[0].id }`)
                     .addField("Date", episode[0].attributes.formatted_published_at)
-                    .addField("Summary", episode[0].attributes.summary)
+                    .addField("Summary", episode[0].attributes.summary ? episode[0].attributes.summary : episode[0].attributes.formatted_summary.split('~~~')[0])
                     .setImage(episode[0].attributes.image_url);
 
                 message.channel.send({ embeds: [embedMsg] });
