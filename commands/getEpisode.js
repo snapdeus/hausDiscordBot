@@ -35,7 +35,7 @@ module.exports = {
 
         const getShow = async () => {
             try {
-                const url = `https://api.transistor.fm/v1/episodes?pagination[page]=1&pagination[per]=100000&fields`
+                const url = `https://api.transistor.fm/v1/episodes?pagination[page]=1&pagination[per]=500&fields`
                 const res = await axios.get(url, config)
                 const epNumber = parseInt(args[0]);
                 const numEps = await res.data.data[0].attributes.number;
