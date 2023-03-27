@@ -21,6 +21,8 @@ module.exports = {
             .addField('Dice games', '/roll and /shipcc')
             .addField('XP and Leaderboard', '/rank and /leaders')
             .addField('Shopping Bag', '/bag, /bread, /dairy, /pasta, /soup')
+            .addField('Crime and Punishment', '/steal, /arrest - If you steal, you may go to Jail!')
+            .addField('AI-Chat', 'use the command !chat to talk with hausBot powered by chatGPT.\n hausBot stores what you say in a database for persistent memory.')
 
         console.log('HELP MESSAGE SENT')
         message.author.send({ embeds: [embedMsg] });
