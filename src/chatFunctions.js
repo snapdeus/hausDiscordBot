@@ -53,6 +53,7 @@ async function chatWithAi(args, message, memory, chatBot) {
         const model = new ChatOpenAI({
             temperature: 1.0,
             openAIApiKey: process.env.OPENAI_API_KEY,
+            modelName: 'gpt-4',
             // verbose: true,
             // callbackManager,
         })
