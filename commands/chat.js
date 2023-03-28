@@ -10,6 +10,15 @@ const allowedRoles = ['973978697910599781', '974050213075513405', '9733483020556
 
 const talkedRecently = new Set();
 
+function splitMessage(message, maxLength = 2000) {
+    const messageChunks = [];
+
+    for (let i = 0; i < message.length; i += maxLength) {
+        messageChunks.push(message.slice(i, i + maxLength));
+    }
+
+    return messageChunks;
+}
 module.exports = {
     name: 'chat',
     description: 'chat with user',
@@ -79,8 +88,21 @@ module.exports = {
             } else {
                 try {
                     const chatBot = client.user.username;
-                    // console.log(chatBot)
-                    message.channel.send(`${ await chatWithAi(args, message, memory, chatBot) }`);
+                    const chatResponse = await chatWithAi(args, message, memory, chatBot)
+
+                    if (chatResponse.length > 2000) {
+                        console.log(chatResponse.length)
+                        const messageChunks = splitMessage(chatResponse);
+
+                        messageChunks.forEach(chunk => {
+                            message.channel.send(`${ chunk }`);
+                        });
+
+                    } else {
+                        message.channel.send(`${ chatResponse }`);
+                    }
+
+
                 } catch (e) {
                     message.channel.send(`ERROR`);
                     console.log(e)
@@ -97,7 +119,7 @@ module.exports = {
 
 
         } else {
-            message.channel.send(`You do not currently have permission to chat with me.`);
+            message.channel.send(`You do not currently have permission to chat with me. Please acquire 🪙500 Haus Coins`);
         }
     }
 }
