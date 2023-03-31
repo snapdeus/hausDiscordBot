@@ -10,12 +10,18 @@ const Discord = require('discord.js')
 const { Client, Intents } = require('discord.js');
 const cron = require('node-cron')
 const { createRandomPhrase, makeUniqueGreeting } = require('./utils/phraseFunctions')
+let config;
+if (process.env.NODE_ENV?.trim() === 'development') {
+    config = require('./config/config.test.json');
+} else {
+    config = require('./config/config.json');
+}
 
 
 
 
-const apiKey = process.env.TRANSISTOR_API_KEY;
-const config = { headers: { 'x-api-key': apiKey } }
+// const apiKey = process.env.TRANSISTOR_API_KEY;
+// const config = { headers: { 'x-api-key': apiKey } }
 
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS] });
@@ -27,7 +33,7 @@ const prefix = "!"
 
 
 
-mongoose.connect(`mongodb://localhost:27017/haus-db?authSource=admin`, {
+mongoose.connect(`mongodb://127.0.0.1:27017/haus-db?authSource=admin`, {
     useNewUrlParser: true,
     // useCreateIndex: true,
     useUnifiedTopology: true,
@@ -58,11 +64,11 @@ for (const file of commandFiles) {
 
 
 client.on('ready', () => {
-    console.log('hausBot logged in')
+    console.log(`${ client.user.tag } logged in`)
 
     const retrieveEpisodeAndSend = async () => {
         const { embedMsg } = await randomEpisodes.getRandomShow();
-        const channel = client.channels.cache.get(process.env.TESTEPISODE_CHANNEL);
+        const channel = client.channels.cache.get(config.EPISODE_CHANNEL);
         channel.send({ embeds: [embedMsg] });
     };
 
@@ -74,7 +80,7 @@ client.on('ready', () => {
 
     const retrieveComicAndSend = async () => {
         const { embedMsg } = await randomComic.getRandomComic();
-        const channel = client.channels.cache.get(process.env.TESTCOMIC_CHANNEL);
+        const channel = client.channels.cache.get(config.COMIC_CHANNEL);
         channel.send({ embeds: [embedMsg] });
     }
 
@@ -149,4 +155,4 @@ process.on("uncaughtException", (err, origin,) => {
 })
 
 
-client.login(process.env.TESTBOT_TOKEN)
+client.login(config.BOT_TOKEN)

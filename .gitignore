@@ -6,7 +6,7 @@ node_modules/*
 !node_modules/langchain
 node_modules/langchain/node_modules/*
 
-
-
+config/config.json
+config/config.test.json
 
 json.sqlite

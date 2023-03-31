@@ -5,6 +5,14 @@ const Discord = require('discord.js');
 const { v4: uuidv4 } = require('uuid');
 const short_term_memory = 10;
 
+let config;
+if (process.env.NODE_ENV?.trim() === 'development') {
+    config = require('../config/config.test.json');
+} else {
+    config = require('../config/config.json');
+}
+
+
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
 });
@@ -58,8 +66,8 @@ async function chatWithAi(args, message, memory, chatBot) {
         })
         const pinecone = new PineconeClient();
         await pinecone.init({
-            environment: process.env.TESTPINECONE_SERVER,
-            apiKey: process.env.TESTPINECONE_API_KEY,
+            environment: config.PINECONE_SERVER,
+            apiKey: config.PINECONE_API_KEY,
         });
         const index = pinecone.Index("testindex");
         //OLD WAY OF DOING THE PINECONE DBCONFIG
