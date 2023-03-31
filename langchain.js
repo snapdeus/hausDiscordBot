@@ -46,6 +46,21 @@ async function main() {
         const PINECONE_NAME_SPACE = "TESTINDEX"
 
 
+        //old way of doing, with openai API
+        // const completion = await openai.createChatCompletion({
+        //     model: "gpt-3.5-turbo",
+        //     max_tokens: 750,
+        //     temperature: 0.6,
+        //     messages: [
+        //         { role: "system", content: `You are a helpful assistant named ${ chatBot }, having a conversation with ${ username }` },
+        //         { role: "assistant", content: oldMemories },
+        //         { role: "user", content: prompt }
+        //     ],
+        // });
+
+        // console.log(completion.config)
+        // const chatResponse = completion.data.choices[0].message.content
+
 
 
         const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 1 });

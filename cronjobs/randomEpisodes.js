@@ -83,9 +83,8 @@ module.exports.getRandomShow = async () => {
             .setTitle(`#${ episode.attributes.number } ${ episode.attributes.title }`)
             .setURL(`https://hausofdecline.com/episodes/${ pageNumber }/${ episode.id }`)
             .addField("Date", episode.attributes.formatted_published_at)
-            .addField("Summary", episode.attributes.summary)
+            .addField("Summary", episode.attributes.summary ? episode.attributes.summary : episode.attributes.formatted_summary.split('~~~')[0])
             .setImage(episode.attributes.image_url);
-
 
         return { episode, numEps, pageNumber, embedMsg };
 

@@ -26,12 +26,11 @@ async function chatWithAi(args, message, memory, chatBot) {
         const { ChatVectorDBQAChain } = await import("langchain/chains");
         const { RecursiveCharacterTextSplitter } = await import("langchain/text_splitter");
         const { CallbackManager } = await import('langchain/callbacks');
-        // const { SerpAPI, Calculator } = await import("langchain/tools");
-        // const { initializeAgentExecutor } = await import("langchain/agents");
+
 
 
         // process.env.LANGCHAIN_HANDLER = "langchain";
-        // const tools = [new SerpAPI(), new Calculator()];
+
 
 
         // const callbackManager = CallbackManager.fromHandlers({
@@ -59,8 +58,8 @@ async function chatWithAi(args, message, memory, chatBot) {
         })
         const pinecone = new PineconeClient();
         await pinecone.init({
-            environment: process.env.PINECONE_SERVER,
-            apiKey: process.env.PINECONE_API_KEY,
+            environment: process.env.TESTPINECONE_SERVER,
+            apiKey: process.env.TESTPINECONE_API_KEY,
         });
         const index = pinecone.Index("testindex");
         //OLD WAY OF DOING THE PINECONE DBCONFIG
@@ -90,13 +89,6 @@ async function chatWithAi(args, message, memory, chatBot) {
                 return { memoryKey: "chat_history" }
             }
         }
-        // const oldMemories = oldMemoriesArray.join(" ")
-
-
-        //MAYBE DO THIS IN AN IF STATEMENT?
-
-
-
 
 
         //AGENT STUFF
@@ -127,25 +119,6 @@ async function chatWithAi(args, message, memory, chatBot) {
             chat_history: [memoryObject.oldMemories],
 
         });
-
-
-
-
-
-        //old way of doing, with openai API
-        // const completion = await openai.createChatCompletion({
-        //     model: "gpt-3.5-turbo",
-        //     max_tokens: 750,
-        //     temperature: 0.6,
-        //     messages: [
-        //         { role: "system", content: `You are a helpful assistant named ${ chatBot }, having a conversation with ${ username }` },
-        //         { role: "assistant", content: oldMemories },
-        //         { role: "user", content: prompt }
-        //     ],
-        // });
-
-        // console.log(completion.config)
-        // const chatResponse = completion.data.choices[0].message.content
 
 
         const chatResponse = response['text']

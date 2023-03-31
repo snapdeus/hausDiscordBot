@@ -12,11 +12,9 @@ const talkedRecently = new Set();
 
 function splitMessage(message, maxLength = 2000) {
     const messageChunks = [];
-
     for (let i = 0; i < message.length; i += maxLength) {
         messageChunks.push(message.slice(i, i + maxLength));
     }
-
     return messageChunks;
 }
 module.exports = {
@@ -27,7 +25,6 @@ module.exports = {
         const username = message.author.username;
         const userId = message.author.id;
         const guildId = message.guild.id;
-
 
         // FIND USER IN DB
         const user = await User.findOne({ userId: userId })
@@ -42,7 +39,6 @@ module.exports = {
             await user.save()
             return "Initializing...";
         }
-
 
         // INITIALIZE MEMORY THE FIRST TIME
         //PUT THIS IN SEEDS FILE
@@ -67,9 +63,6 @@ module.exports = {
             return message.channel.send("Initializing memory...please wait 1 second and try again.");
         }
 
-
-
-
         if (message.channel.id !== '975202962173485186' && message.channel.id !== '884434543543726134') {
             message.channel.send("Please chat with the ai in the 'ai-chat' channel.");
             return
@@ -91,7 +84,7 @@ module.exports = {
                     const chatResponse = await chatWithAi(args, message, memory, chatBot)
 
                     if (chatResponse.length > 2000) {
-                        console.log(chatResponse.length)
+
                         const messageChunks = splitMessage(chatResponse);
 
                         messageChunks.forEach(chunk => {
