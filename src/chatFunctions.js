@@ -3,13 +3,20 @@ require('dotenv').config()
 const { Configuration, OpenAIApi } = require("openai");
 const Discord = require('discord.js');
 const { v4: uuidv4 } = require('uuid');
-const short_term_memory = 11;
-
+let short_term_memory;
+let memory_offset;
 let config;
+let k_value;
 if (process.env.NODE_ENV?.trim() === 'development') {
     config = require('../config/config.test.json');
+    short_term_memory = 3;
+    memory_offset = 2;
+    k_value = 1;
 } else {
     config = require('../config/config.json');
+    short_term_memory = 11;
+    memory_offset = 5;
+    k_value = 5;
 }
 
 
@@ -41,19 +48,19 @@ async function chatWithAi(args, message, memory, chatBot) {
 
 
 
-        // const callbackManager = CallbackManager.fromHandlers({
-        //     handleLLMStart: async (llm, prompts) => {
+        const callbackManager = CallbackManager.fromHandlers({
+            handleLLMStart: async (llm, prompts) => {
 
-        //         console.log("LLM", JSON.stringify(llm, null, 2));
-        //         console.log("PROMPTS", JSON.stringify(prompts, null, 2));
-        //     },
-        //     handleLLMEnd: async (output) => {
-        //         console.log(JSON.stringify(output, null, 2));
-        //     },
-        //     handleLLMError: async (err) => {
-        //         console.error(err);
-        //     },
-        // });
+                console.log("LLM", JSON.stringify(llm, null, 2));
+                console.log("PROMPTS", JSON.stringify(prompts, null, 2));
+            },
+            handleLLMEnd: async (output) => {
+                console.log(JSON.stringify(output, null, 2));
+            },
+            handleLLMError: async (err) => {
+                console.error(err);
+            },
+        });
 
         const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 1 });
         const PINECONE_NAME_SPACE = "TESTINDEX"
@@ -63,8 +70,8 @@ async function chatWithAi(args, message, memory, chatBot) {
             openAIApiKey: process.env.OPENAI_API_KEY,
             modelName: 'gpt-4',
 
-            // verbose: true,
-            // callbackManager,
+            verbose: true,
+            callbackManager,
         })
         const pinecone = new PineconeClient();
         await pinecone.init({
@@ -119,7 +126,7 @@ async function chatWithAi(args, message, memory, chatBot) {
             vectorStore,
             {
                 returnSourceDocuments: false,
-                k: 5
+                k: k_value
             }
         );
 
@@ -165,7 +172,7 @@ async function chatWithAi(args, message, memory, chatBot) {
             // let tooManyMemories = memory.memories.slice(-20);
             // memory.memories = tooManyMemories;
             //we will instead empty the array
-            memory.memories = memory.memories.splice(-(short_term_memory - 5));
+            memory.memories = memory.memories.splice(-(short_term_memory - memory_offset));
         }
 
         await memory.save()
