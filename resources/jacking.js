@@ -20,12 +20,21 @@ exports.starter = [
     "I got in trouble for",
     "I got high fived in court for",
     "I got sent to jail for",
-    "It was worth going blind for"
+    "It was worth going blind for",
+    "In the bathroom at work someone walked in on this guy",
+    "The manager at the restaurant was caught",
+    "I saw my boss",
+    "They saw our boss",
+    "Even my grandpa likes"
+
 ]
 
 
 
 exports.jackingOff = [
+    "cutting a hole in my jorts in order to jerk my gerkin without people noticin",
+    "cutting a hole in my jorts in order to jerk my gerkin without people noticin",
+    "cutting a hole in my jorts in order to jerk my gerkin without people noticin",
     "cutting a hole in my jorts in order to jerk my gerkin without people noticin",
     "Going on a big date with Rosy Palms",
     "Adjusting my set",
