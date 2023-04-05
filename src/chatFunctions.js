@@ -14,9 +14,9 @@ if (process.env.NODE_ENV?.trim() === 'development') {
     k_value = 1;
 } else {
     config = require('../config/config.json');
-    short_term_memory = 8;
-    memory_offset = 4;
-    k_value = 3;
+    short_term_memory = 11;
+    memory_offset = 5;
+    k_value = 5;
 }
 
 
