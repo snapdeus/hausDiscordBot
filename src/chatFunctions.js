@@ -48,27 +48,29 @@ async function chatWithAi(args, message, memory, chatBot) {
 
 
 
-        // const callbackManager = CallbackManager.fromHandlers({
-        //     handleLLMStart: async (llm, prompts) => {
+        const callbackManager = CallbackManager.fromHandlers({
+            handleLLMStart: async (llm, prompts) => {
 
-        //         console.log("LLM", JSON.stringify(llm, null, 2));
-        //         console.log("PROMPTS", JSON.stringify(prompts, null, 2));
-        //     },
-        //     handleLLMEnd: async (output) => {
-        //         console.log(JSON.stringify(output, null, 2));
-        //     },
-        //     handleLLMError: async (err) => {
-        //         console.error(err);
-        //     },
-        // });
+                console.log("LLM", JSON.stringify(llm, null, 2));
+                console.log("PROMPTS", JSON.stringify(prompts, null, 2));
+            },
+            handleLLMEnd: async (output) => {
+                console.log(JSON.stringify(output, null, 2));
+            },
+            handleLLMError: async (err) => {
+                console.error(err);
+            },
+        });
 
         const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 1 });
         const PINECONE_NAME_SPACE = "TESTINDEX"
         const model = new ChatOpenAI({
 
-            temperature: 1.0,
+            temperature: 0.9,
             openAIApiKey: process.env.OPENAI_API_KEY,
-            modelName: 'gpt-4',
+            /*default is gpt3.5*/
+            // modelName: 'gpt-4',
+
 
             // verbose: true,
             // callbackManager,
