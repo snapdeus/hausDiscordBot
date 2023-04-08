@@ -75,7 +75,7 @@ module.exports = {
             return
         }
 
-        if (allowedRoles.includes(role) || user.xpOverTime > 500) {
+        if (user.xpOverTime > 500) {
             if (talkedRecently.has(message.author.id)) {
                 message.channel.send("Please wait 5s before issuing another prompt.")
             } else {
