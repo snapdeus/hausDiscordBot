@@ -1,6 +1,6 @@
 
-const { chatWithAi } = require('../src/chatFunctions')
-const Memory = require('../models/memoryBank')
+const { chatWithAi } = require('../src/codeGenerationChatFunctions')
+
 const User = require('../models/user')
 const { v4: uuidv4 } = require('uuid');
 
@@ -18,7 +18,7 @@ function splitMessage(message, maxLength = 2000) {
     return messageChunks;
 }
 module.exports = {
-    name: 'chat',
+    name: 'code',
     description: 'chat with user',
 
     async execute(client, message, args, member) {
@@ -43,25 +43,25 @@ module.exports = {
         // INITIALIZE MEMORY THE FIRST TIME
         //PUT THIS IN SEEDS FILE
         // await Memory.deleteMany({})
-        const memory = await Memory.findOne({})
-        if (!memory) {
-            const memory = new Memory({
-                memories: [
-                    {
-                        memoryId: uuidv4(),
-                        userStatement: "",
-                        aiStatement: "",
-                        userId: "",
-                        userName: "",
-                        aiName: "",
-                    }
+        // const memory = await Memory.findOne({})
+        // if (!memory) {
+        //     const memory = new Memory({
+        //         memories: [
+        //             {
+        //                 memoryId: uuidv4(),
+        //                 userStatement: "",
+        //                 aiStatement: "",
+        //                 userId: "",
+        //                 userName: "",
+        //                 aiName: "",
+        //             }
 
-                ]
-            })
+        //         ]
+        //     })
 
-            await memory.save()
-            return message.channel.send("Initializing memory...please wait 1 second and try again.");
-        }
+        //     await memory.save()
+        //     return message.channel.send("Initializing memory...please wait 1 second and try again.");
+        // }
 
         if (message.channel.id !== '975202962173485186' && message.channel.id !== '884434543543726134') {
             message.channel.send("Please chat with the ai in the 'ai-chat' channel.");
@@ -81,7 +81,7 @@ module.exports = {
             } else {
                 try {
                     const chatBot = client.user.username;
-                    const chatResponse = await chatWithAi(args, message, memory, chatBot)
+                    const chatResponse = await chatWithAi(args, message, user, chatBot)
 
                     if (chatResponse.length > 2000) {
 
@@ -94,7 +94,6 @@ module.exports = {
                     } else {
                         message.channel.send(`${ chatResponse }`);
                     }
-
 
                 } catch (e) {
                     message.channel.send(`ERROR`);
