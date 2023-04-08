@@ -84,8 +84,7 @@ module.exports = {
                     const chatResponse = await chatWithAi(args, message, user, chatBot)
 
                     if (chatResponse.length > 2000) {
-                        user.xpOverTime = user.xpOverTime - 5
-                        await user.save()
+
                         const messageChunks = splitMessage(chatResponse);
 
                         messageChunks.forEach(chunk => {
@@ -95,6 +94,8 @@ module.exports = {
                     } else {
                         message.channel.send(`${ chatResponse }`);
                     }
+                    user.xpOverTime = user.xpOverTime - 5
+                    await user.save()
 
                 } catch (e) {
                     message.channel.send(`ERROR`);
