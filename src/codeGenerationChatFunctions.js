@@ -11,7 +11,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 
-const systemContent = `
+const systemContentForRPG = `
 You will be generating code, for example a valid JSON array of objects for an RPG i'm making.
 Global Buff Rule: 10% of the items you generate should have a special buff. The buffTypes are:  Attack,  Defense,  Magic Attack,  Magic Defense,  Evade,  Endurance,  HP,  AP. The amounts range between 5 and 50.
 note this js function for later:Object.defineProperty(String.prototype, 'capitalize', { value: function() { return this.charAt(0).toUpperCase() + this.slice(1); },enumerable: false });
@@ -54,7 +54,7 @@ Remember, only 10% of the items you generate should have buffs. If you find at t
 If there is no Buff, omit the Buff entirely, do not put a null value. If there is no Buff, do not say that the item gives you any ability.  Only items with Buff can give user abilities. Only use the keys that are listed in the example, do not add additional keys. Do not omit any object using //… Return every object in order. The number of objects you return = totalamount.
 `
 
-
+const systemContent = `You are a helpful assistant bot.`
 async function chatWithAi(args, message, user) {
     const initiliazing = "Initializing..."
     const username = message.author.username;
@@ -78,6 +78,7 @@ async function chatWithAi(args, message, user) {
                 { role: "user", content: prompt }
             ],
         });
+
         const chatResponse = completion.data.choices[0].message.content
 
         //++++++++++++++++images++++++++++++++++++++++++
