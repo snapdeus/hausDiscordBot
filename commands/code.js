@@ -88,11 +88,11 @@ module.exports = {
                         const messageChunks = splitMessage(chatResponse);
 
                         messageChunks.forEach(chunk => {
-                            message.channel.send(`${ chunk }`);
+                            message.reply(`${ chunk }`);
                         });
 
                     } else {
-                        message.channel.send(`${ chatResponse }`);
+                        message.reply(`${ chatResponse }`);
                     }
 
                 } catch (e) {

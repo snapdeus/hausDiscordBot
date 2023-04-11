@@ -112,7 +112,7 @@ client.on('messageCreate', message => {
 
             try {
                 const args = message.content.trim().split(' ');;
-                console.log(args)
+
                 command.execute(client, message, args, message.member);
 
             } catch (error) {
