@@ -11,9 +11,12 @@ const { Client, Intents } = require('discord.js');
 const cron = require('node-cron')
 const { createRandomPhrase, makeUniqueGreeting } = require('./utils/phraseFunctions')
 let config;
+let botId;
 if (process.env.NODE_ENV?.trim() === 'development') {
     config = require('./config/config.test.json');
+    botId = '884512701798285372'
 } else {
+    botId = '968597421435256846'
     config = require('./config/config.json');
 }
 
@@ -100,14 +103,29 @@ client.on('messageCreate', message => {
     } else if (message.content.toLowerCase().includes('soda') && !message.author.bot) {
         message.reply('Obamna')
     }
-    if (message.content.toLowerCase().includes('swag') && !message.author.bot) {
-        message.delete();
-        message.channel.send('Do not utter the banned word. Use !snipe to retrieve your message.');
+
+    if (message.type === 'REPLY') {
+
+        if (message.mentions.repliedUser.id === botId) {
+
+            const command = client.commands.get('chat');
+
+            try {
+                const args = message.content.trim().split(' ');;
+                console.log(args)
+                command.execute(client, message, args, message.member);
+
+            } catch (error) {
+                console.error(error);
+                message.reply('there was an error trying to execute that command!');
+            }
+        }
     }
 
-    if (!message.content.startsWith("!jackoff")) {
-        if (!message.content.startsWith(prefix) || message.author.bot) return;
-    }
+
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+
 
     const args = message.content.slice(prefix.length).trim().split(' ');
 
