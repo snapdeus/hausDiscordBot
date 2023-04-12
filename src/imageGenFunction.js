@@ -38,7 +38,8 @@ async function chatWithAi(args, message, user) {
         return chatResponse
 
     } catch (e) {
-        console.log(`api error ${ e }`)
+        console.log(`api error ${ e.response.data.error.message }`)
+        return e.response.data.error.message
     }
 
 }
