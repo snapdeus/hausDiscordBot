@@ -40,10 +40,10 @@ module.exports = {
             return "Initializing...";
         }
 
-        if (message.attachments.first()?.url === undefined) {
-            message.reply("You must attach a file for this to work. No URL support yet...");
-            return
-        }
+        // if (message.attachments.first()?.url === undefined) {
+        //     message.reply("You must attach a file for this to work. No URL support yet...");
+        //     return
+        // }
 
         if (message.channel.id !== '975202962173485186' && message.channel.id !== '884434543543726134') {
             message.channel.send("Please chat with the ai in the 'ai-chat' channel.");
@@ -65,16 +65,14 @@ module.exports = {
                     const chatBot = client.user.username;
                     const chatResponse = await chatWithAi(args, message, user, chatBot)
 
-                    if (chatResponse.length > 2000) {
+                    if (chatResponse.length > 0) {
 
-                        const messageChunks = splitMessage(chatResponse);
-
-                        messageChunks.forEach(chunk => {
-                            message.reply(`${ chunk }`);
+                        chatResponse.forEach(image => {
+                            message.reply(`${ image.url }`);
                         });
 
                     } else {
-                        message.reply(`${ chatResponse }`);
+                        message.reply(`${ chatResponse[0].url }`);
                     }
                     user.xpOverTime = user.xpOverTime - 10
                     await user.save()
