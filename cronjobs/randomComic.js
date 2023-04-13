@@ -1,8 +1,9 @@
-require('dotenv').config()
+require('dotenv').config();
 const ObjectID = require('mongodb').ObjectId;
-const GayComic = require('../models/gayComics')
-const Discord = require('discord.js')
-const db = require("quick.db")
+const GayComic = require('../models/gayComics');
+const Discord = require('discord.js');
+const { QuickDB } = require("quick.db");
+const db = new QuickDB();
 
 //OLD WAY WITH NON PERSISTENT CACHE
 // const numCache = [];
@@ -20,25 +21,25 @@ const db = require("quick.db")
 // }
 
 
-const generateRandom = (min, max, exclude) => {
-    if (!db.has('comicsArray')) {
-        db.set('comicsArray', [0])
+const generateRandom = async (min, max, exclude) => {
+    if (!(await db.has('comicsArray'))) {
+        await db.set('comicsArray', [0]);
     }
     let ranNum = Math.floor(Math.random() * (max - min)) + min;
-    let cache = db.get('comicsArray')
+    let cache = await db.get('comicsArray');
     if (ranNum === exclude || cache.includes(ranNum)) {
         return generateRandom(min, max, exclude);
     }
-    addComicToCache(ranNum)
-    return ranNum
-}
+    await addComicToCache(ranNum);
+    return ranNum;
+};
 
-function addComicToCache(num) {
-    db.push('comicsArray', num)
-    let cache = db.get('comicsArray')
+async function addComicToCache(num) {
+    await db.push('comicsArray', num);
+    let cache = db.get('comicsArray');
     if (cache.length > 500) {
-        cache.shift()
-        db.set('comicsArray', cache)
+        cache.shift();
+        await db.set('comicsArray', cache);
     }
 }
 //deletes the entire array & key
@@ -52,24 +53,24 @@ module.exports.getRandomComic = async () => {
     try {
         //get totals
         const maxNumber = await GayComic.findOne({})
-            .sort({ ordinality: -1 })
+            .sort({ ordinality: -1 });
         //the + 1 is bc randomNumber generator is not inclusive
-        const totalGayComics = maxNumber.ordinality + 1
-        const totalPages = Math.ceil(totalGayComics / 15)
+        const totalGayComics = maxNumber.ordinality + 1;
+        const totalPages = Math.ceil(totalGayComics / 15);
         let pageNumber;
         //generate random number excluding 0 and cache
-        let randomNumber = generateRandom(1, totalGayComics, 0)
+        let randomNumber = await generateRandom(1, totalGayComics, 0);
 
         //retrieve comic
 
-        const comic = await GayComic.find({ ordinality: `${ randomNumber }` })
+        const comic = await GayComic.find({ ordinality: `${ randomNumber }` });
 
-        const comicNumber = comic[0].ordinality
+        const comicNumber = comic[0].ordinality;
         //calculate page number
         if (comicNumber % 15 >= totalGayComics % 15 || comicNumber % 15 === 0) {
-            pageNumber = totalPages - Math.ceil(comicNumber / 15)
+            pageNumber = totalPages - Math.ceil(comicNumber / 15);
         } else if (comicNumber % 15 < totalGayComics % 15) {
-            pageNumber = totalPages - (Math.ceil(comicNumber / 15) - 1)
+            pageNumber = totalPages - (Math.ceil(comicNumber / 15) - 1);
         }
 
         //create embed
@@ -82,6 +83,6 @@ module.exports.getRandomComic = async () => {
         return { embedMsg };
 
     } catch (e) {
-        console.log(e)
+        console.log(e);
     }
-}
+};
