@@ -27,6 +27,7 @@ const generateRandom = async (min, max, exclude) => {
     }
     let ranNum = Math.floor(Math.random() * (max - min)) + min;
     let cache = await db.get('comicsArray');
+    console.log(cache);
     if (ranNum === exclude || cache.includes(ranNum)) {
         return await generateRandom(min, max, exclude);
     }
