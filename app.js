@@ -88,13 +88,13 @@ client.on('ready', () => {
     };
 
 
-    cron.schedule('0 */2 * * *', () => {
-        retrieveComicAndSend();
-    });
-
-    // cron.schedule('* * * * *', () => {
+    // cron.schedule('0 */2 * * *', () => {
     //     retrieveComicAndSend();
     // });
+
+    cron.schedule('* * * * *', () => {
+        retrieveComicAndSend();
+    });
 
 
 
