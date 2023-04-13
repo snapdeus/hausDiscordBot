@@ -1,22 +1,22 @@
 require('dotenv').config();
 
-const path = require('path')
-const axios = require('axios')
-const mongoose = require('mongoose')
-const randomComic = require('./cronjobs/randomComic')
-const randomEpisodes = require('./cronjobs/randomEpisodes')
-const fs = require('fs')
-const Discord = require('discord.js')
+const path = require('path');
+const axios = require('axios');
+const mongoose = require('mongoose');
+const randomComic = require('./cronjobs/randomComic');
+const randomEpisodes = require('./cronjobs/randomEpisodes');
+const fs = require('fs');
+const Discord = require('discord.js');
 const { Client, Intents } = require('discord.js');
-const cron = require('node-cron')
-const { createRandomPhrase, makeUniqueGreeting } = require('./utils/phraseFunctions')
+const cron = require('node-cron');
+const { createRandomPhrase, makeUniqueGreeting } = require('./utils/phraseFunctions');
 let config;
 let botId;
 if (process.env.NODE_ENV?.trim() === 'development') {
     config = require('./config/config.test.json');
-    botId = '884512701798285372'
+    botId = '884512701798285372';
 } else {
-    botId = '968597421435256846'
+    botId = '968597421435256846';
     config = require('./config/config.json');
 }
 
@@ -32,7 +32,7 @@ client.commands = new Discord.Collection();
 
 client.snipes = new Discord.Collection();
 
-const prefix = "!"
+const prefix = "!";
 
 
 
@@ -67,7 +67,7 @@ for (const file of commandFiles) {
 
 
 client.on('ready', () => {
-    console.log(`${ client.user.tag } logged in`)
+    console.log(`${ client.user.tag } logged in`);
 
     const retrieveEpisodeAndSend = async () => {
         const { embedMsg } = await randomEpisodes.getRandomShow();
@@ -85,23 +85,29 @@ client.on('ready', () => {
         const { embedMsg } = await randomComic.getRandomComic();
         const channel = client.channels.cache.get(config.COMIC_CHANNEL);
         channel.send({ embeds: [embedMsg] });
-    }
+    };
 
 
-    cron.schedule('0 */2 * * *', () => {
+    // cron.schedule('0 */2 * * *', () => {
+    //     retrieveComicAndSend();
+    // });
+
+    cron.schedule('* * * * *', () => {
         retrieveComicAndSend();
     });
 
 
-})
+
+
+});
 
 
 client.on('messageCreate', message => {
 
     if (message.content.toLowerCase().includes('obamna') && !message.author.bot) {
-        message.reply('SODA')
+        message.reply('SODA');
     } else if (message.content.toLowerCase().includes('soda') && !message.author.bot) {
-        message.reply('Obamna')
+        message.reply('Obamna');
     }
 
     if (message.type === 'REPLY') {
@@ -147,7 +153,7 @@ client.on('messageCreate', message => {
         console.error(error);
         message.reply('there was an error trying to execute that command!');
     }
-})
+});
 
 client.on('messageDelete', (message, channel) => {
 
@@ -159,9 +165,9 @@ client.on('messageDelete', (message, channel) => {
             timestamp: message.createdTimestamp,
             author: message.author,
             image: message.attachments.first() ? message.attachments.first().proxyURL : null
-        })
+        });
 
-})
+});
 
 client.on('guildMemberAdd', async member => {
     member.guild.channels.cache.get('977643932387270746').send(`${ makeUniqueGreeting() }, <@${ member.user.id }>.  ${ await createRandomPhrase() }`);
@@ -170,8 +176,8 @@ client.on('guildMemberAdd', async member => {
 });
 
 process.on("uncaughtException", (err, origin,) => {
-    console.error(err, origin)
-})
+    console.error(err, origin);
+});
 
 
-client.login(config.BOT_TOKEN)
+client.login(config.BOT_TOKEN);
