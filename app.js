@@ -75,10 +75,13 @@ client.on('ready', () => {
         channel.send({ embeds: [embedMsg] });
     };
 
-    cron.schedule('0 15 * * *', () => {
+    // cron.schedule('0 15 * * *', () => {
+    //     retrieveEpisodeAndSend();
+    // });
+
+    cron.schedule('* * * * *', () => {
         retrieveEpisodeAndSend();
     });
-
 
 
     const retrieveComicAndSend = async () => {
@@ -88,13 +91,10 @@ client.on('ready', () => {
     };
 
 
-    // cron.schedule('0 */2 * * *', () => {
-    //     retrieveComicAndSend();
-    // });
-
-    cron.schedule('* * * * *', () => {
+    cron.schedule('0 */2 * * *', () => {
         retrieveComicAndSend();
     });
+
 
 
 

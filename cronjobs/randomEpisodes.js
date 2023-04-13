@@ -5,7 +5,7 @@ const apiKey = process.env.TRANSISTOR_API_KEY;
 const config = { headers: { 'x-api-key': apiKey } };
 const Discord = require('discord.js');
 const { QuickDB } = require("quick.db");
-const db = new QuickDB();
+const db = new QuickDB({ filePath: `../json.sqlite` });
 
 
 
@@ -42,7 +42,7 @@ async function generateRandom(min, exclude) {
     // console.log(cache.includes(randomEpisodeId));
     //no episode 58
     if (ranNum === exclude || cache.includes(randomEpisodeId)) {
-        return generateRandom(min, exclude);
+        return await generateRandom(min, exclude);
     }
     await addEpisodeToCache(randomEpisodeId);
     return { randomEpisodeId, numEps };
