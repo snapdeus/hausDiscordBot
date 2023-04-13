@@ -39,7 +39,7 @@ async function generateRandom(min, exclude) {
     let cache = await db.get('episodesArray');
     idArray[ranNum];
     let randomEpisodeId = parseInt(idArray[ranNum]);
-    // console.log(cache.includes(randomEpisodeId));
+    console.log(cache);
     //no episode 58
     if (ranNum === exclude || cache.includes(randomEpisodeId)) {
         return await generateRandom(min, exclude);
