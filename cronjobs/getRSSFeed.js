@@ -9,111 +9,94 @@ const parser = new Parser();
 const { https, http } = require('follow-redirects');
 const axios = require;
 const { v3: uuidv3 } = require('uuid');
-
+const fs = require('fs');
 const fetch = require('node-fetch');
 
 
 
 const MY_NAMESPACE = 'ed000fe2-da29-11ed-afa1-0242ac120002';
-
+const articlesDB = db.table('articles');
+const cachedLastModifiedDB = db.table('lastModified');
 
 const rssFeeds = {
-    ap: 'https://rsshub.app/apnews/topics/apf-topnews',
-    yahoo: 'https://www.yahoo.com/news/rss',
-    nyt: 'https://rss.nytimes.com/services/xml/rss/nyt/US.xml',
-    bbc: 'http://feeds.bbci.co.uk/news/rss.xml?edition=us#'
+    // ap: {
+    //     name: "ap",
+    //     url: 'https://rsshub.app/apnews/topics/apf-topnews'
+    // },
+    yahoo: {
+        name: "yahoo",
+        url: 'https://yahoo.com/news/rss'
+    },
+    dw: {
+        name: "dw",
+        url: 'https://rsshub.app/dw/en'
+    },
+    al: {
+        name: "aljazeera",
+        url: 'https://rsshub.app/aljazeera/english/news'
+    },
+    bbc: {
+        name: "bbc",
+        url: 'https://rsshub.app/bbc'
+    },
 
 };
 
-const getUniqueArticle = async () => {
-    //check db for cache and create if doesn't exist
-    if (!(await db.has('articlesArray'))) {
-        await db.set('articlesArray', [0]);
+
+const fetchAndParseFeed = async (feedObj) => {
+    let feedUrl = feedObj.url;
+    let feedName = feedObj.name;
+    try {
+
+
+        const previousLastModified = await cachedLastModifiedDB.get(feedName);
+
+        const fetchOptions = previousLastModified ? { headers: { 'If-Modified-Since': previousLastModified } } : {};
+        console.log(fetchOptions);
+
+        const response = await fetch(feedUrl, fetchOptions);
+
+        if (response.status === 304) {
+            console.log('No new articles found.');
+            return;
+        }
+        const lastModified = response.headers.get('Last-Modified');
+        console.log(lastModified, "last modified for ", feedName);
+        if (lastModified) {
+            await cachedLastModifiedDB.set(feedName, lastModified);
+        }
+
+
+
+
+
+        const feed = await parser.parseURL(feedUrl);
+
+
+
+
+        const articles = feed.items;
+
+        // console.log(articles[0].link, articles[0].title);
+    } catch (error) {
+        console.log(`Error fetching or parsing the feed: ${ error }`);
     }
-    //get article
-    // let rssArticles = await parser.parseURL(rssFeeds.yahoo);
-    // const articles = rssArticles.items;
 
-    let cache = await db.get('articlesArray');
-
-    //if linkID is already there, return this function and go again
-
-    //     for (let article of articles) {
-    //       const isCached = 
-    //   }
-
-    // await addArticleToCache(linkID);
-    // return articles;
 };
 
-async function addArticleToCache(id) {
-    await db.push('articlesArray', id);
-    let cache = await db.get('articlesArray');
-    if (cache.length > 60) {
-        cache.splice(0, 30);
-        await db.set('articlesArray', cache);
+
+const testpost = async (feeds) => {
+    for (const feedUrl of Object.values(feeds)) {
+        const newArticle = await fetchAndParseFeed(feedUrl);
+        if (newArticle) {
+            console.log(newArticle);
+        }
     }
+};
+
+for (let link of Object.values(rssFeeds)) {
+    fetchAndParseFeed(link);
 }
-
-
-getUniqueArticle();
-let cachedArticles = [];
-let lastModified = null;
-
-async function fetchRssFeed(feedUrl) {
-    const headers = {};
-
-    if (lastModified) {
-        headers['If-Modified-Since'] = lastModified;
-    }
-
-    const response = await fetch(feedUrl, { headers });
-
-    if (response.status === 304) {
-        // The feed has not been modified since our last request
-        return [];
-    }
-
-    if (!response.ok) {
-        // Error occurred while fetching the feed
-        console.error('Error fetching the RSS feed:', response.status);
-        return [];
-    }
-
-    lastModified = response.headers.get('Last-Modified');
-    console.log(lastModified);
-    const feedText = await response.text();
-    const feed = await new Parser().parseString(feedText);
-
-    // Filter out articles that are already in the cache
-    const newArticles = feed.items.filter((item) => !cachedArticles.includes(item.link));
-
-    // Update the cache with new articles
-    cachedArticles.push(...newArticles.map((item) => item.link));
-
-    return newArticles;
-}
-
-async function fetchOneUniqueArticle(feedUrl) {
-    const newArticles = await fetchRssFeed(feedUrl);
-
-    if (newArticles.length === 0) {
-        return null;
-    }
-
-    // Return the first unique article found
-    console.log(newArticles[0]);
-    return newArticles[0];
-}
-
-
-
-
-
-setInterval(async () => {
-    fetchOneUniqueArticle(rssFeeds.yahoo);
-}, 3000);
-
 
 module.exports.getNewsArticle = async () => {
     try {
