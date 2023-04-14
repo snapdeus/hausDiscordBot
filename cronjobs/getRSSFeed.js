@@ -15,9 +15,6 @@ const fetch = require('node-fetch');
 
 
 const MY_NAMESPACE = 'ed000fe2-da29-11ed-afa1-0242ac120002';
-// const aba = uuidv3("HELLO STEPHEN", MY_NAMESPACE);
-// const bab = uuidv3("HELLO STEPHEN", MY_NAMESPACE);
-
 
 
 const rssFeeds = {
@@ -28,47 +25,95 @@ const rssFeeds = {
 
 };
 
-
-
 const getUniqueArticle = async () => {
     //check db for cache and create if doesn't exist
     if (!(await db.has('articlesArray'))) {
         await db.set('articlesArray', [0]);
     }
-
     //get article
+    // let rssArticles = await parser.parseURL(rssFeeds.yahoo);
+    // const articles = rssArticles.items;
 
-    let rssArticles = await parser.parseURL(rssFeeds.ap);
-    const articles = rssArticles.items;
-    //set link id
-    // const linkID = uuidv3(article.link, MY_NAMESPACE);
-    for (let article of articles) {
-        console.log(article.pubDate);
-    }
-    // let cache = await db.get('articlesArray');
-    // console.log(cache);
-    // //if linkID is already there, return this function and go again
-    // if (cache.includes(linkID)) {
-    //     return await getUniqueArticle();
-    // }
+    let cache = await db.get('articlesArray');
 
+    //if linkID is already there, return this function and go again
+
+    //     for (let article of articles) {
+    //       const isCached = 
+    //   }
 
     // await addArticleToCache(linkID);
-    // return article;
+    // return articles;
 };
-
-
 
 async function addArticleToCache(id) {
     await db.push('articlesArray', id);
-    let cache = db.get('articlesArray');
-    if (cache.length > 100) {
-        cache.shift();
+    let cache = await db.get('articlesArray');
+    if (cache.length > 60) {
+        cache.splice(0, 30);
         await db.set('articlesArray', cache);
     }
 }
 
+
 getUniqueArticle();
+let cachedArticles = [];
+let lastModified = null;
+
+async function fetchRssFeed(feedUrl) {
+    const headers = {};
+
+    if (lastModified) {
+        headers['If-Modified-Since'] = lastModified;
+    }
+
+    const response = await fetch(feedUrl, { headers });
+
+    if (response.status === 304) {
+        // The feed has not been modified since our last request
+        return [];
+    }
+
+    if (!response.ok) {
+        // Error occurred while fetching the feed
+        console.error('Error fetching the RSS feed:', response.status);
+        return [];
+    }
+
+    lastModified = response.headers.get('Last-Modified');
+    console.log(lastModified);
+    const feedText = await response.text();
+    const feed = await new Parser().parseString(feedText);
+
+    // Filter out articles that are already in the cache
+    const newArticles = feed.items.filter((item) => !cachedArticles.includes(item.link));
+
+    // Update the cache with new articles
+    cachedArticles.push(...newArticles.map((item) => item.link));
+
+    return newArticles;
+}
+
+async function fetchOneUniqueArticle(feedUrl) {
+    const newArticles = await fetchRssFeed(feedUrl);
+
+    if (newArticles.length === 0) {
+        return null;
+    }
+
+    // Return the first unique article found
+    console.log(newArticles[0]);
+    return newArticles[0];
+}
+
+
+
+
+
+setInterval(async () => {
+    fetchOneUniqueArticle(rssFeeds.yahoo);
+}, 3000);
+
 
 module.exports.getNewsArticle = async () => {
     try {
@@ -84,6 +129,6 @@ module.exports.getNewsArticle = async () => {
         return { embedMsg };
 
     } catch (e) {
-        console.dir(e, { depth: 8 });
+        console.log(e);
     }
 };
