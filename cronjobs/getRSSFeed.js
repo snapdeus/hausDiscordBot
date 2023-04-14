@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const Discord = require('discord.js');
 const { QuickDB } = require("quick.db");
-const db = new QuickDB();
+const db = new QuickDB({ filePath: `./json.sqlite` });
 const Parser = require('rss-parser');
 const parser = new Parser();
 const { https, http } = require('follow-redirects');
@@ -23,60 +23,63 @@ const MY_NAMESPACE = 'ed000fe2-da29-11ed-afa1-0242ac120002';
 const rssFeeds = {
     ap: 'https://rsshub.app/apnews/topics/apf-topnews',
     yahoo: 'https://www.yahoo.com/news/rss',
-    nyt: 'https://rsshub.app/nytimes/dual',
+    nyt: 'https://rss.nytimes.com/services/xml/rss/nyt/US.xml',
     bbc: 'http://feeds.bbci.co.uk/news/rss.xml?edition=us#'
 
 };
 
 
+
 const getUniqueArticle = async () => {
     //check db for cache and create if doesn't exist
-    if (!db.has('articlesArray')) {
-        db.set('articlesArray', [0]);
+    if (!(await db.has('articlesArray'))) {
+        await db.set('articlesArray', [0]);
     }
 
     //get article
 
-    let rssArticles = await parser.parseURL('https://rsshub.app/nytimes/dual');
-    const link = rssArticles.items[0];
+    let rssArticles = await parser.parseURL(rssFeeds.ap);
+    const articles = rssArticles.items;
     //set link id
-    // const linkID = uuidv3(link, MY_NAMESPACE);
-    // let cache = db.get('articlesArray');
+    // const linkID = uuidv3(article.link, MY_NAMESPACE);
+    for (let article of articles) {
+        console.log(article.pubDate);
+    }
+    // let cache = await db.get('articlesArray');
+    // console.log(cache);
     // //if linkID is already there, return this function and go again
     // if (cache.includes(linkID)) {
-    //     return generateRandom();
+    //     return await getUniqueArticle();
     // }
-    console.log(link);
 
-    // addArticleToCache(linkID);
-    // return rssArticle;
+
+    // await addArticleToCache(linkID);
+    // return article;
 };
 
-getUniqueArticle();
 
-function addArticleToCache(id) {
-    db.push('articlesArray', id);
+
+async function addArticleToCache(id) {
+    await db.push('articlesArray', id);
     let cache = db.get('articlesArray');
     if (cache.length > 100) {
         cache.shift();
-        db.set('articlesArray', cache);
+        await db.set('articlesArray', cache);
     }
 }
 
+getUniqueArticle();
 
 module.exports.getNewsArticle = async () => {
     try {
 
-
-
-
-
+        let article = await getUniqueArticle();
         //create embed
         const embedMsg = new Discord.MessageEmbed()
             .setColor('#0099ff')
-            .setTitle(``)
-            .setURL(``)
-            .setImage(``);
+            .setTitle(`${ article.title }`)
+            .setURL(`${ article.link }`)
+            .setDescription(`${ article.pubDate }`);
 
         return { embedMsg };
 
