@@ -5,6 +5,7 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 const randomComic = require('./cronjobs/randomComic');
 const randomEpisodes = require('./cronjobs/randomEpisodes');
+const { retrieveArticlesAndSend } = require('./cronjobs/getRSSFeed');
 const fs = require('fs');
 const Discord = require('discord.js');
 const { Client, Intents } = require('discord.js');
@@ -98,8 +99,13 @@ client.on('ready', () => {
     });
 
 
+    const sendArticleLinks = async () => {
+        await retrieveArticlesAndSend(client);
+    };
 
-
+    cron.schedule('* * * * *', () => {
+        sendArticleLinks();
+    });
 
 });
 
