@@ -57,25 +57,26 @@ const fetchAndParseFeed = async (feedObj) => {
     let feedName = feedObj.name;
     try {
 
-
+        //get previous timestamp
         const previousLastModified = await cachedLastModifiedDB.get(feedName);
-
+        //set it as header, or empty if doesn't exist
         const fetchOptions = previousLastModified ? { headers: { 'If-Modified-Since': previousLastModified } } : {};
-
+        //do simple fetch first, to see if there were modifications
         const response = await fetch(feedUrl, fetchOptions);
-
+        //return if there were no modifications
         if (response.status === 304) {
             return;
         }
+        //set new timestamp and put in db
         const lastModified = response.headers.get('Last-Modified');
         if (lastModified) {
             await cachedLastModifiedDB.set(feedName, lastModified);
         }
-
+        //get the full feed of all articles and parse it
         const feed = await parser.parseURL(feedUrl);
         const articles = feed.items;
 
-
+        //return only first article
         return articles[0];
     } catch (error) {
         console.log(`Error fetching or parsing the feed: ${ error }`);
@@ -87,18 +88,20 @@ const fetchAndParseFeed = async (feedObj) => {
 const createArticleLinks = async (feeds) => {
     try {
         let linkArray = [];
+        //for every news source, attempt to get article
         for (const feedUrl of Object.values(feeds)) {
             const newArticle = await fetchAndParseFeed(feedUrl);
-
+            //if successful, add article to db
             if (newArticle) {
                 const sanitizedFeedUrl = newArticle.link.replace(/\./g, "__dot__");
+                //check if exists in db already
                 if (!(await articlesDB.get(sanitizedFeedUrl))) {
                     linkArray.push(newArticle.link);
                     await articlesDB.set(sanitizedFeedUrl, true);
                 }
             }
         }
-
+        //return array of articles to send to channel
         return linkArray;
     } catch (error) {
         console.error(error);
