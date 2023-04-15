@@ -46,6 +46,10 @@ const rssFeeds = {
         name: "bbc",
         url: 'https://rsshub.app/bbc'
     },
+    guardian: {
+        name: "guardian",
+        url: "https://www.theguardian.com/us/rss",
+    },
 
 };
 function sleep(ms) {
@@ -60,7 +64,7 @@ const fetchAndParseFeed = async (feedObj) => {
         //get previous timestamp
         const previousLastModified = await cachedLastModifiedDB.get(feedName);
         //set it as header, or empty if doesn't exist
-        const fetchOptions = previousLastModified ? { headers: { 'If-Modified-Since': previousLastModified } } : {};
+        const fetchOptions = feedName === "guardian" ? { headers: { 'If-None-Match': previousLastModified ? previousLastModified : '' } } : { headers: { 'If-Modified-Since': previousLastModified ? previousLastModified : '' } }
         //do simple fetch first, to see if there were modifications
         const response = await fetch(feedUrl, fetchOptions);
         //return if there were no modifications
@@ -68,7 +72,7 @@ const fetchAndParseFeed = async (feedObj) => {
             return;
         }
         //set new timestamp and put in db
-        const lastModified = response.headers.get('Last-Modified');
+        const lastModified = response.headers.get('Last-Modified') || response.headers.get('etag');
         if (lastModified) {
             await cachedLastModifiedDB.set(feedName, lastModified);
         }
@@ -110,6 +114,7 @@ const createArticleLinks = async (feeds) => {
 };
 
 module.exports.retrieveArticlesAndSend = async (client) => {
+
     const articleLinks = await createArticleLinks(rssFeeds);
     const channel = client.channels.cache.get(config.NEWS_CHANNEL);
     if (!articleLinks) {
