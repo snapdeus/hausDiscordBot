@@ -5,8 +5,23 @@ const User = require('../models/user')
 const { v4: uuidv4 } = require('uuid');
 
 
-const allowedRoles = ['973978697910599781', '974050213075513405', '973348302055682088', '954022194520932393', '954012026039070741', '973619573754564648', '954034692598951976', '953988101859049553', '973620158423781496', '968476411474112533', '972920088061694053', '1083503275447423146', '974050213075513405']
+const allowedRoles = [
+    //comic creator
+    '973348302055682088',
+    //admin
+    '973978697910599781',
+    '954022194520932393',
+    //magnate
+    '954012026039070741',
+    //snapdeus server 
+    '974050213075513405',
 
+    //unknown
+    // '968476411474112533',
+
+
+    // '974050213075513405'
+]
 
 const talkedRecently = new Set();
 
@@ -75,7 +90,7 @@ module.exports = {
             return
         }
 
-        if (allowedRoles.includes(role) || user.xpOverTime > 500) {
+        if (allowedRoles.includes(role) || user.xpOverTime > 300) {
             if (talkedRecently.has(message.author.id)) {
                 message.channel.send("Please wait 5s before issuing another prompt.")
             } else {
@@ -94,6 +109,8 @@ module.exports = {
                     } else {
                         message.reply(`${ chatResponse }`);
                     }
+                    user.xpOverTime = user.xpOverTime - 20
+                    await user.save()
 
 
                 } catch (e) {
@@ -112,7 +129,7 @@ module.exports = {
 
 
         } else {
-            message.channel.send(`You do not currently have permission to chat with me. Please acquire 🪙500 Haus Coins`);
+            message.channel.send(`You do not currently have permission to chat with me. Please acquire 🪙300 Haus Coins`);
         }
     }
 }
