@@ -1,19 +1,19 @@
 
-require('dotenv').config()
-const User = require('../models/user')
+require('dotenv').config();
+const User = require('../models/user');
 const { Configuration, OpenAIApi } = require("openai");
 const Discord = require('discord.js');
 
-const fs = require('fs')
-const path = require('path')
-const dir = path.join(__dirname)
+const fs = require('fs');
+const path = require('path');
+const dir = path.join(__dirname);
 const PNG = require("pngjs").PNG;
 
-const { createCanvas, loadImage, Image } = require('canvas')
+const { createCanvas, loadImage, Image } = require('canvas');
 
 
-const width = 256
-const height = 256
+const width = 256;
+const height = 256;
 const canvas = createCanvas(width, height);
 const ctx = canvas.getContext('2d');
 async function loadImageAndDraw(imagePath) {
@@ -24,12 +24,12 @@ async function loadImageAndDraw(imagePath) {
 const url =
 
     async function generateStuff() {
-        await loadImageAndDraw(url)
-        const canvasBuffer = canvas.toBuffer('image/png')
-        canvasBuffer.name = 'image.png'
+        await loadImageAndDraw(url);
+        const canvasBuffer = canvas.toBuffer('image/png');
+        canvasBuffer.name = 'image.png';
 
 
-    }
+    };
 
 generateStuff();
 

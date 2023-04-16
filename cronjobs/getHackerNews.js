@@ -46,21 +46,20 @@ const createArticleLinks = async () => {
         }
         const prevStories = await hackerNewsDB.get('itemsArray');
         const topStories = await getTopStories();
-
         //if there are no previous stories in db, add all new top stories to db and return them
         if (prevStories.length === 0) {
-            console.log(topStories);
             await hackerNewsDB.push('itemsArray', ...topStories);
             return topStories;
         }
         //filter the previous stories that are currently in db, and only return new stories
-        const filteredStories = prevStories.filter(val => !topStories.includes(val));
+        const filteredStories = topStories.filter(val => !prevStories.includes(val));
+
         //if there are indeed some need stories, push the new ones onto the db
         if (filteredStories.length > 0) {
             await hackerNewsDB.push('itemsArray', ...filteredStories);
         }
         //return the new stories (there may not be any, caution may return empty array)
-        console.log(filteredStories);
+
         return filteredStories;
 
     } catch (error) {
