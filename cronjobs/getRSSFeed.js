@@ -78,8 +78,7 @@ const fetchAndParseFeed = async (feedObj) => {
         }
         //get the full feed of all articles and parse it
         const feed = await parser.parseURL(feedUrl);
-        const articles = feed.items;
-
+        const articles = feedName === 'yahoo' ? feed.items.sort((a, b) => new Date(b.isoDate) - new Date(a.isoDate)) : feed.items;
         //return only first article
         return articles[0];
     } catch (error) {
@@ -87,6 +86,7 @@ const fetchAndParseFeed = async (feedObj) => {
     }
 
 };
+
 
 
 const createArticleLinks = async (feeds) => {
