@@ -123,6 +123,8 @@ client.on('ready', () => {
 
 client.on('messageCreate', message => {
 
+
+
     if (message.content.toLowerCase().includes('obamna') && !message.author.bot) {
         message.reply('SODA');
     } else if (message.content.toLowerCase().includes('soda') && !message.author.bot) {
@@ -131,7 +133,11 @@ client.on('messageCreate', message => {
 
     if (message.type === 'REPLY') {
 
+
+
         if (message.mentions.repliedUser.id === botId) {
+
+            if (message.channelId === '968530218841165856' || message.channelId === '992179994233151628') return;
 
             const command = client.commands.get('chat');
 
