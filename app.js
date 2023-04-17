@@ -1,11 +1,12 @@
 require('dotenv').config();
 
-const path = require('path');
-const axios = require('axios');
+// const path = require('path');
+// const axios = require('axios');
 const mongoose = require('mongoose');
 const randomComic = require('./cronjobs/randomComic');
 const randomEpisodes = require('./cronjobs/randomEpisodes');
 const { retrieveArticlesAndSend } = require('./cronjobs/getRSSFeed');
+const { retrieveTechArticlesAndSend } = require('./cronjobs/getHackerNews');
 const fs = require('fs');
 const Discord = require('discord.js');
 const { Client, Intents } = require('discord.js');
@@ -93,7 +94,6 @@ client.on('ready', () => {
         channel.send({ embeds: [embedMsg] });
     };
 
-
     cron.schedule('0 */2 * * *', () => {
         retrieveComicAndSend();
     });
@@ -102,14 +102,28 @@ client.on('ready', () => {
     const sendArticleLinks = async () => {
         await retrieveArticlesAndSend(client);
     };
-
     cron.schedule('45 * * * *', () => {
         sendArticleLinks();
     });
+
+
+
+
+    const sendTechArticleLinks = async () => {
+        await retrieveTechArticlesAndSend(client);
+    };
+    cron.schedule('30 * * * *', () => {
+        sendTechArticleLinks();
+    });
+
+
+
 });
 
 
 client.on('messageCreate', message => {
+
+
 
     if (message.content.toLowerCase().includes('obamna') && !message.author.bot) {
         message.reply('SODA');
@@ -119,7 +133,11 @@ client.on('messageCreate', message => {
 
     if (message.type === 'REPLY') {
 
+
+
         if (message.mentions.repliedUser.id === botId) {
+
+            if (message.channelId === '968530218841165856' || message.channelId === '992179994233151628') return;
 
             const command = client.commands.get('chat');
 

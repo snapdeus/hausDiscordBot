@@ -1,15 +1,12 @@
 require('dotenv').config();
 
 
-const Discord = require('discord.js');
+
 const { QuickDB } = require("quick.db");
 const db = new QuickDB({ filePath: `./json.sqlite` });
 const Parser = require('rss-parser');
 const parser = new Parser();
-const { https, http } = require('follow-redirects');
-const axios = require;
-const { v3: uuidv3 } = require('uuid');
-const fs = require('fs');
+
 const fetch = require('node-fetch');
 let config;
 let botId;
@@ -50,6 +47,10 @@ const rssFeeds = {
         name: "guardian",
         url: "https://www.theguardian.com/us/rss",
     },
+    nyt: {
+        name: "nyt",
+        url: "https://rss.nytimes.com/services/xml/rss/nyt/US.xml"
+    }
 
 };
 function sleep(ms) {
@@ -64,21 +65,35 @@ const fetchAndParseFeed = async (feedObj) => {
         //get previous timestamp
         const previousLastModified = await cachedLastModifiedDB.get(feedName);
         //set it as header, or empty if doesn't exist
-        const fetchOptions = feedName === "guardian" ? { headers: { 'If-None-Match': previousLastModified ? previousLastModified : '' } } : { headers: { 'If-Modified-Since': previousLastModified ? previousLastModified : '' } }
+        const fetchOptions = feedName === "guardian" ? { headers: { 'If-None-Match': previousLastModified ? previousLastModified : '' } } : { headers: { 'If-Modified-Since': previousLastModified ? previousLastModified : '' } };
         //do simple fetch first, to see if there were modifications
         const response = await fetch(feedUrl, fetchOptions);
         //return if there were no modifications
         if (response.status === 304) {
             return;
         }
+
+        //get the full feed of all articles and parse it
+        const feed = await parser.parseURL(feedUrl);
         //set new timestamp and put in db
         const lastModified = response.headers.get('Last-Modified') || response.headers.get('etag');
+
         if (lastModified) {
             await cachedLastModifiedDB.set(feedName, lastModified);
         }
-        //get the full feed of all articles and parse it
-        const feed = await parser.parseURL(feedUrl);
-        const articles = feedName === 'yahoo' ? feed.items.sort((a, b) => new Date(b.isoDate) - new Date(a.isoDate)) : feed.items;
+
+
+
+        let articles;
+        if (feedName === 'yahoo') {
+            articles = feed.items.sort((a, b) => new Date(b.isoDate) - new Date(a.isoDate));
+        } else if (feedName === 'nyt') {
+            articles = feed.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+        } else {
+            articles = feed.items;
+        }
+
+        // const articles = feedName === 'yahoo' ? feed.items.sort((a, b) => new Date(b.isoDate) - new Date(a.isoDate)) : feed.items;
         //return only first article
         return articles[0];
     } catch (error) {
@@ -86,8 +101,6 @@ const fetchAndParseFeed = async (feedObj) => {
     }
 
 };
-
-
 
 const createArticleLinks = async (feeds) => {
     try {
