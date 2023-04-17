@@ -47,6 +47,10 @@ const rssFeeds = {
         name: "guardian",
         url: "https://www.theguardian.com/us/rss",
     },
+    nyt: {
+        name: "nyt",
+        url: "https://rss.nytimes.com/services/xml/rss/nyt/US.xml"
+    }
 
 };
 function sleep(ms) {
@@ -68,14 +72,28 @@ const fetchAndParseFeed = async (feedObj) => {
         if (response.status === 304) {
             return;
         }
+
+        //get the full feed of all articles and parse it
+        const feed = await parser.parseURL(feedUrl);
         //set new timestamp and put in db
         const lastModified = response.headers.get('Last-Modified') || response.headers.get('etag');
+
         if (lastModified) {
             await cachedLastModifiedDB.set(feedName, lastModified);
         }
-        //get the full feed of all articles and parse it
-        const feed = await parser.parseURL(feedUrl);
-        const articles = feedName === 'yahoo' ? feed.items.sort((a, b) => new Date(b.isoDate) - new Date(a.isoDate)) : feed.items;
+
+
+
+        let articles;
+        if (feedName === 'yahoo') {
+            articles = feed.items.sort((a, b) => new Date(b.isoDate) - new Date(a.isoDate));
+        } else if (feedName === 'nyt') {
+            articles = feed.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+        } else {
+            articles = feed.items;
+        }
+
+        // const articles = feedName === 'yahoo' ? feed.items.sort((a, b) => new Date(b.isoDate) - new Date(a.isoDate)) : feed.items;
         //return only first article
         return articles[0];
     } catch (error) {
@@ -83,8 +101,6 @@ const fetchAndParseFeed = async (feedObj) => {
     }
 
 };
-
-
 
 const createArticleLinks = async (feeds) => {
     try {
