@@ -59,10 +59,12 @@ const createArticleLinks = async () => {
         if (filteredStories.length > 0) {
             await hackerNewsDB.push('itemsArray', ...filteredStories);
         }
+
         //clear cache array if needed
         if (prevStories.length >= 50) {
             prevStories.splice(0, 30);
             await hackerNewsDB.set('itemsArray', prevStories);
+            console.log('deleted some hackers news articles from dbrun ');
         }
 
         //return the new stories (there may not be any, caution may return empty array)
@@ -91,8 +93,9 @@ module.exports.retrieveTechArticlesAndSend = async (client) => {
         articleObjectsArray.push(itemObj.data);
     }
     for (articleObject of articleObjectsArray) {
+        let imageURL;
         try {
-            const imageURL = await fetchOgImage(articleObject.url);
+            imageURL = await fetchOgImage(articleObject.url);
         } catch (e) {
             console.log(e);
         }
