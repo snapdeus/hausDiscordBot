@@ -61,10 +61,10 @@ const createArticleLinks = async () => {
         }
 
         //clear cache array if needed
-        if (prevStories.length >= 50) {
-            prevStories.splice(0, 30);
+        if (prevStories.length > 20) {
+            prevStories.shift();
             await hackerNewsDB.set('itemsArray', prevStories);
-            console.log('deleted some hackers news articles from dbrun ');
+            console.log('deleted one hackers news articles from db ');
         }
 
         //return the new stories (there may not be any, caution may return empty array)
