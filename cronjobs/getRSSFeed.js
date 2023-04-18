@@ -126,6 +126,15 @@ const createArticleLinks = async (feeds) => {
 
 };
 
+async function deleteArticles() {
+    const cachedArticles = await articlesDB.all();
+    if (cachedArticles.length > 100) {
+        for (let i = 0; i < 50; i++) {
+            await articlesDB.delete(cachedArticles[i].id);
+        }
+    }
+}
+
 module.exports.retrieveArticlesAndSend = async (client) => {
 
     const articleLinks = await createArticleLinks(rssFeeds);
@@ -137,6 +146,7 @@ module.exports.retrieveArticlesAndSend = async (client) => {
         channel.send(link);
         sleep(500);
     }
+    deleteArticles();
 };
 
 

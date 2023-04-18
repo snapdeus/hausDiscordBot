@@ -51,6 +51,7 @@ const createArticleLinks = async () => {
             await hackerNewsDB.push('itemsArray', ...topStories);
             return topStories;
         }
+
         //filter the previous stories that are currently in db, and only return new stories
         const filteredStories = topStories.filter(val => !prevStories.includes(val));
 
@@ -58,6 +59,12 @@ const createArticleLinks = async () => {
         if (filteredStories.length > 0) {
             await hackerNewsDB.push('itemsArray', ...filteredStories);
         }
+        //clear cache array if needed
+        if (prevStories.length >= 50) {
+            prevStories.splice(0, 30);
+            await hackerNewsDB.set('itemsArray', prevStories);
+        }
+
         //return the new stories (there may not be any, caution may return empty array)
 
         return filteredStories;
@@ -77,8 +84,6 @@ module.exports.retrieveTechArticlesAndSend = async (client) => {
         return;
     }
 
-
-
     const articleObjectsArray = [];
     for (i of receivedItems) {
         const url = `https://hacker-news.firebaseio.com/v0/item/${ i }.json?print=pretty`;
@@ -86,8 +91,12 @@ module.exports.retrieveTechArticlesAndSend = async (client) => {
         articleObjectsArray.push(itemObj.data);
     }
     for (articleObject of articleObjectsArray) {
+        try {
+            const imageURL = await fetchOgImage(articleObject.url);
+        } catch (e) {
+            console.log(e);
+        }
 
-        const imageURL = await fetchOgImage(articleObject.url);
         const embedMsg = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle(articleObject.title)

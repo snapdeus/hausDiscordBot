@@ -1,4 +1,4 @@
-const Discord = require('discord.js')
+const Discord = require('discord.js');
 
 
 
@@ -23,10 +23,12 @@ module.exports = {
             .addField('Shopping Bag', '/getcash /bag, /bread, /dairy, /pasta, /soup')
             .addField('Crime and Punishment', '/steal, /arrest - If you steal, you may go to Jail!')
             .addField('AI-Chat', 'use the command !chat to talk with hausBot powered by chatGPT.\n hausBot stores what you say in a database for persistent memory.')
+            .addField('Image generation', '!image and !vary (vary requires attached image))')
+            .addField('Misc', '!pw - get an archive.is link of a provided URL');
 
-        console.log('HELP MESSAGE SENT')
+        console.log('HELP MESSAGE SENT');
         message.author.send({ embeds: [embedMsg] });
 
 
     }
-}
+};
