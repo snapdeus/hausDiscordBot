@@ -112,10 +112,10 @@ client.on('ready', () => {
     const sendTechArticleLinks = async () => {
         await retrieveTechArticlesAndSend(client);
     };
-    cron.schedule('30 * * * *', () => {
+    cron.schedule('* * * * *', () => {
         sendTechArticleLinks();
     });
-
+    sendTechArticleLinks();
 
 
 });

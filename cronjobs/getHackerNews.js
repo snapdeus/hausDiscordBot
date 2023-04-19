@@ -55,18 +55,16 @@ const createArticleLinks = async () => {
         //filter the previous stories that are currently in db, and only return new stories
         const filteredStories = topStories.filter(val => !prevStories.includes(val));
 
+        console.log('filteredStories=', filteredStories);
         //if there are indeed some need stories, push the new ones onto the db
         if (filteredStories.length > 0) {
             await hackerNewsDB.push('itemsArray', ...filteredStories);
         }
-
         //clear cache array if needed
         if (prevStories.length > 20) {
-            prevStories.shift();
-            await hackerNewsDB.set('itemsArray', prevStories);
-            console.log('deleted one hackers news articles from db ');
+            const removedOneStories = prevStories.slice(1);
+            await hackerNewsDB.set('itemsArray', removedOneStories);
         }
-
         //return the new stories (there may not be any, caution may return empty array)
 
         return filteredStories;
