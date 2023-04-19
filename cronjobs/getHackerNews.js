@@ -17,11 +17,7 @@ if (process.env.NODE_ENV?.trim() === 'development') {
     config = require('../config/config.json');
 }
 
-
-
-
-
-const hackerNewsDB = db.table('hackerNews');
+const hackerNewsDB = db.table('computerTech');
 const getTopStories = async () => {
 
 
@@ -29,7 +25,7 @@ const getTopStories = async () => {
         const url = 'https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty&orderBy="$priority"&limitToFirst=5';
         const res = await axios.get(url);
 
-        return (res.data);
+        return res.data;
 
     } catch (e) {
         console.log(e);
@@ -41,33 +37,19 @@ const getTopStories = async () => {
 
 const createArticleLinks = async () => {
     try {
-        if (!(await hackerNewsDB.get('itemsArray'))) {
-            await hackerNewsDB.set('itemsArray', []);
-        }
-        const prevStories = await hackerNewsDB.get('itemsArray');
+
         const topStories = await getTopStories();
-        //if there are no previous stories in db, add all new top stories to db and return them
-        if (prevStories.length === 0) {
-            await hackerNewsDB.push('itemsArray', ...topStories);
-            return topStories;
+
+        let storyIdArray = [];
+        for (storyId of topStories) {
+            let idString = storyId.toString();
+            if (!(await hackerNewsDB.get(idString))) {
+                storyIdArray.push(idString);
+                await hackerNewsDB.set(idString, true);
+            }
         }
 
-        //filter the previous stories that are currently in db, and only return new stories
-        const filteredStories = topStories.filter(val => !prevStories.includes(val));
-
-        console.log('filteredStories=', filteredStories);
-        //if there are indeed some need stories, push the new ones onto the db
-        if (filteredStories.length > 0) {
-            await hackerNewsDB.push('itemsArray', ...filteredStories);
-        }
-        //clear cache array if needed
-        if (prevStories.length > 20) {
-            const removedOneStories = prevStories.slice(1);
-            await hackerNewsDB.set('itemsArray', removedOneStories);
-        }
-        //return the new stories (there may not be any, caution may return empty array)
-
-        return filteredStories;
+        return storyIdArray;
 
     } catch (error) {
         console.error(error);
@@ -75,21 +57,36 @@ const createArticleLinks = async () => {
 };
 
 
+async function deleteArticles() {
+    const cachedArticles = await hackerNewsDB.all();
+    console.log(cachedArticles.length);
+    if (cachedArticles.length > 30) {
+        for (let i = 0; i < 5; i++) {
+            await hackerNewsDB.delete(cachedArticles[i].id);
+        }
+        console.log("deleted some articles from computerTechDB");
+    }
+}
 
 
 module.exports.retrieveTechArticlesAndSend = async (client) => {
     const receivedItems = await createArticleLinks();
     const channel = client.channels.cache.get(config.TECH_CHANNEL);
     if (receivedItems.length === 0) {
+        console.log('no new computerTech articles');
         return;
     }
 
     const articleObjectsArray = [];
+
+    //potentially replace this for with map
     for (i of receivedItems) {
         const url = `https://hacker-news.firebaseio.com/v0/item/${ i }.json?print=pretty`;
         const itemObj = await axios.get(url);
         articleObjectsArray.push(itemObj.data);
     }
+
+    //replace this for with map
     for (articleObject of articleObjectsArray) {
         let imageURL;
         try {
@@ -105,6 +102,7 @@ module.exports.retrieveTechArticlesAndSend = async (client) => {
             .setURL(articleObject.url)
             .setImage(imageURL ? imageURL : 'https://i.imgur.com/G1CV4Hd.png');
         channel.send({ embeds: [embedMsg] });
-    }
+    };
+    deleteArticles();
 };
 

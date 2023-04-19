@@ -132,7 +132,7 @@ async function deleteArticles() {
         for (let i = 0; i < 50; i++) {
             await articlesDB.delete(cachedArticles[i].id);
         }
-        console.log("deleted some articles");
+        console.log("deleted some articles from rssFeedDB");
     }
 }
 
