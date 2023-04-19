@@ -51,7 +51,7 @@ async function chatWithAi(args, message, user) {
         const completion = await openai.createImageVariation(
             canvasBuffer,
             1,
-            "256x256"
+            "512x512"
         );
 
 
