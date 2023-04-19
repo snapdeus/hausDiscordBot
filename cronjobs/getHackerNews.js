@@ -84,7 +84,8 @@ module.exports.retrieveTechArticlesAndSend = async (client) => {
         const url = `https://hacker-news.firebaseio.com/v0/item/${ i }.json?print=pretty`;
         const { data } = await axios.get(url);
         try {
-            data.imageURL = await fetchOgImage(articleObject.url);
+            const image = await fetchOgImage(data.url)
+            data.imageURL = image ? image : 'https://i.imgur.com/G1CV4Hd.png'
         } catch (e) {
             console.log(e);
         }
@@ -94,21 +95,13 @@ module.exports.retrieveTechArticlesAndSend = async (client) => {
 
 
     console.log(articleObjectsArray);
-    //replace this for with map
     for (articleObject of articleObjectsArray) {
-        let imageURL;
-        try {
-            imageURL = await fetchOgImage(articleObject.url);
-        } catch (e) {
-            console.log(e);
-        }
-
         const embedMsg = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle(articleObject.title)
             .setDescription(` New Article on Hacker News! `)
             .setURL(articleObject.url)
-            .setImage(imageURL ? imageURL : 'https://i.imgur.com/G1CV4Hd.png');
+            .setImage(articleObject.imageURL);
         channel.send({ embeds: [embedMsg] });
     };
     deleteArticles();
