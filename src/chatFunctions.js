@@ -14,9 +14,9 @@ if (process.env.NODE_ENV?.trim() === 'development') {
     k_value = 1;
 } else {
     config = require('../config/config.json');
-    short_term_memory = 11;
-    memory_offset = 5;
-    k_value = 5;
+    short_term_memory = 6;
+    memory_offset = 3;
+    k_value = 3;
 }
 
 
@@ -66,7 +66,7 @@ async function chatWithAi(args, message, memory, chatBot) {
         const PINECONE_NAME_SPACE = "TESTINDEX"
         const model = new ChatOpenAI({
 
-            temperature: 0.9,
+            temperature: 0.8,
             openAIApiKey: process.env.OPENAI_API_KEY,
             /*default is gpt3.5*/
             modelName: 'gpt-4',
