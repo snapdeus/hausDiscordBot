@@ -78,23 +78,22 @@ module.exports.retrieveTechArticlesAndSend = async (client) => {
     }
 
     const articleObjectsArray = [];
-    console.log(receivedItems);
     //potentially replace this for with map
     for (i of receivedItems) {
         const url = `https://hacker-news.firebaseio.com/v0/item/${ i }.json?print=pretty`;
         const { data } = await axios.get(url);
+        let image;
         try {
-            const image = await fetchOgImage(data.url)
-            data.imageURL = image ? image : 'https://i.imgur.com/G1CV4Hd.png'
+            image = await fetchOgImage(data.url)
+
         } catch (e) {
             console.log(e);
         }
-
+        data.imageURL = image ? image : 'https://i.imgur.com/G1CV4Hd.png'
         articleObjectsArray.push(data);
     }
 
 
-    console.log(articleObjectsArray);
     for (articleObject of articleObjectsArray) {
         const embedMsg = new Discord.MessageEmbed()
             .setColor('#0099ff')
