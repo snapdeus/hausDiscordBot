@@ -116,7 +116,7 @@ client.on('ready', () => {
         sendTechArticleLinks();
     });
 
-
+    sendTechArticleLinks();
 });
 
 

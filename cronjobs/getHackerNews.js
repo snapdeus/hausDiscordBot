@@ -59,7 +59,7 @@ const createArticleLinks = async () => {
 
 async function deleteArticles() {
     const cachedArticles = await hackerNewsDB.all();
-    console.log(cachedArticles.length);
+
     if (cachedArticles.length > 30) {
         for (let i = 0; i < 5; i++) {
             await hackerNewsDB.delete(cachedArticles[i].id);
@@ -78,14 +78,22 @@ module.exports.retrieveTechArticlesAndSend = async (client) => {
     }
 
     const articleObjectsArray = [];
-
+    console.log(receivedItems);
     //potentially replace this for with map
     for (i of receivedItems) {
         const url = `https://hacker-news.firebaseio.com/v0/item/${ i }.json?print=pretty`;
-        const itemObj = await axios.get(url);
-        articleObjectsArray.push(itemObj.data);
+        const { data } = await axios.get(url);
+        try {
+            data.imageURL = await fetchOgImage(articleObject.url);
+        } catch (e) {
+            console.log(e);
+        }
+
+        articleObjectsArray.push(data);
     }
 
+
+    console.log(articleObjectsArray);
     //replace this for with map
     for (articleObject of articleObjectsArray) {
         let imageURL;
