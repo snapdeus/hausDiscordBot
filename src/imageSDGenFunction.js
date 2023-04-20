@@ -53,9 +53,7 @@ async function chatWithAi(args, message, user) {
                         {
                             text: `${ args }`,
                         },
-                        {
-                            text: `a very large dog`,
-                        },
+
                     ],
                     cfg_scale: 7,
                     clip_guidance_preset: 'FAST_BLUE',
