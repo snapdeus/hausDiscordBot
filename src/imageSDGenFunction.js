@@ -13,33 +13,30 @@ const engineId = 'stable-diffusion-v1-5'
 const url = `https://api.stability.ai/v1/generation/${ engineId }/text-to-image`
 
 
+function removeLetters(inputString) {
+    const stringWithoutLetters = inputString.replace(/[a-zA-Z]/g, '');
+    return parseInt(stringWithoutLetters, 10);
+}
+
 
 
 async function chatWithAi(args, message, user) {
-    // const initiliazing = "Initializing...";
-    // const username = message.author.username;
-    // const userId = message.author.id;
-    // const guildId = message.guild.id;
-
 
     try {
-
-        // const prompt = args.join(' ');
-        // const negativePrompt = args
-        // const seed = args.join
-
 
 
         let mySeed = null;
         let negativePrompts = [];
         let prompts = [];
 
+
+
         args.forEach(arg => {
             if (arg.startsWith('$')) {
                 if (mySeed) {
                     throw new Error('More than one seed found. Please provide only one seed.');
                 }
-                mySeed = arg.slice(1); // Remove the $ sign
+                mySeed = removeLetters(arg.slice(1)); // Remove the $ sign
             } else if (arg.startsWith('--')) {
                 negativePrompts.push(arg.slice(2)); // Remove the -- prefix
             } else {
@@ -79,7 +76,7 @@ async function chatWithAi(args, message, user) {
                     clip_guidance_preset: 'FAST_BLUE',
                     height: 512,
                     width: 512,
-                    seed: mySeed ? parseInt(mySeed) : 0,
+                    seed: mySeed ? mySeed : 0,
                     samples: 1,
                     steps: 50,
                 }),
