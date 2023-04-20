@@ -79,7 +79,7 @@ async function chatWithAi(args, message, user) {
                     clip_guidance_preset: 'FAST_BLUE',
                     height: 512,
                     width: 512,
-                    seed: parseInt(mySeed),
+                    seed: mySeed ? parseInt(mySeed) : 0,
                     samples: 1,
                     steps: 50,
                 }),
