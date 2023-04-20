@@ -14,18 +14,6 @@ const url = `https://api.stability.ai/v1/generation/${ engineId }/text-to-image`
 
 
 
-//below currently works
-// const imageBuffer = await axios.get(url, { responseType: 'arraybuffer' })
-//     .then((response) => {
-//         const buffer = new Buffer.from(response.data)
-//         buffer.name = 'image.png'
-//         return buffer
-//     })
-//     .catch((error) => {
-//         console.error('An error occurred while downloading the file:', error);
-//     });
-
-// console.log(imageBuffer)
 
 async function chatWithAi(args, message, user) {
     // const initiliazing = "Initializing...";
@@ -37,8 +25,45 @@ async function chatWithAi(args, message, user) {
     try {
 
         // const prompt = args.join(' ');
+        // const negativePrompt = args
+        // const seed = args.join
 
 
+
+        let mySeed = null;
+        let negativePrompts = [];
+        let prompts = [];
+
+        args.forEach(arg => {
+            if (arg.startsWith('$')) {
+                if (mySeed) {
+                    throw new Error('More than one seed found. Please provide only one seed.');
+                }
+                mySeed = arg.slice(1); // Remove the $ sign
+            } else if (arg.startsWith('--')) {
+                negativePrompts.push(arg.slice(2)); // Remove the -- prefix
+            } else {
+                prompts.push(arg);
+            }
+        });
+
+        if (prompts.length === 0) {
+            throw new Error('No prompts found. Please provide at least one prompt.');
+        }
+
+        let text_prompts = [
+            {
+                text: `${ prompts }`,
+                weight: 1
+            }
+        ];
+
+        if (negativePrompts.length > 0) {
+            text_prompts.push({
+                text: `${ negativePrompts }`,
+                weight: -1
+            });
+        }
         const response = await fetch(
             `https://api.stability.ai/v1/generation/${ engineId }/text-to-image`,
             {
@@ -49,16 +74,12 @@ async function chatWithAi(args, message, user) {
                     Authorization: `Bearer ${ apiKey }`,
                 },
                 body: JSON.stringify({
-                    text_prompts: [
-                        {
-                            text: `${ args }`,
-                        },
-
-                    ],
+                    text_prompts,
                     cfg_scale: 7,
                     clip_guidance_preset: 'FAST_BLUE',
                     height: 512,
                     width: 512,
+                    seed: parseInt(mySeed),
                     samples: 1,
                     steps: 50,
                 }),
