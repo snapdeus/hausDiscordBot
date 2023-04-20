@@ -83,12 +83,19 @@ module.exports = {
                     const chatBot = client.user.username;
                     const chatResponse = await chatWithAi(args, message, user, chatBot)
 
+                    if (Buffer.isBuffer(chatResponse)) {
+                        message.reply({
+                            content: `Here ya go⁣ ${ username }`, files: [
+                                { attachment: chatResponse }
+                            ]
+                        })
+                    } else {
+                        console.log(chatResponse)
+                        message.reply({
+                            content: `Hmmm,⁣ ${ username } \n ${ chatResponse }`,
+                        })
+                    }
 
-                    message.reply({
-                        content: `Here ya go⁣ ${ username }`, files: [
-                            { attachment: chatResponse }
-                        ]
-                    })
 
                     user.xpOverTime = user.xpOverTime - 10
                     await user.save()
