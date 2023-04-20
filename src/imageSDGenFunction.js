@@ -37,7 +37,7 @@ async function chatWithAi(args, message, user) {
                     throw new Error('More than one seed found. Please provide only one seed.');
                 }
                 mySeed = removeLetters(arg.slice(1)); // Remove the $ sign
-            } else if (arg.startsWith('--')) {
+            } else if (arg.startsWith('-')) {
                 negativePrompts.push(arg.slice(2)); // Remove the -- prefix
             } else {
                 prompts.push(arg);
