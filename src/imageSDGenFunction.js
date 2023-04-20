@@ -38,7 +38,7 @@ async function chatWithAi(args, message, user) {
                 }
                 mySeed = removeLetters(arg.slice(1)); // Remove the $ sign
             } else if (arg.startsWith('-')) {
-                negativePrompts.push(arg.slice(2)); // Remove the -- prefix
+                negativePrompts.push(arg.slice(1)); // Remove the - prefix
             } else {
                 prompts.push(arg);
             }
@@ -87,9 +87,13 @@ async function chatWithAi(args, message, user) {
             throw new Error(`Non-200 response: ${ await response.text() }`);
         }
         const responseJSON = await response.json();
-
-
-        return Buffer.from(responseJSON.artifacts[0].base64, 'base64')
+        const chatResponse = {
+            buffer: Buffer.from(responseJSON.artifacts[0].base64, 'base64'),
+            seed: mySeed ? mySeed : 0,
+            prompts: prompts.join(" "),
+            negativePrompts: negativePrompts.length > 0 ? negativePrompts.join(" ") : "N/A"
+        }
+        return chatResponse
     } catch (e) {
         console.log(`api error ${ e }`);
         return e;

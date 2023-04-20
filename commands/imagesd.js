@@ -83,10 +83,10 @@ module.exports = {
                     const chatBot = client.user.username;
                     const chatResponse = await chatWithAi(args, message, user, chatBot)
 
-                    if (Buffer.isBuffer(chatResponse)) {
+                    if (Buffer.isBuffer(chatResponse.buffer)) {
                         message.reply({
-                            content: `Here ya go⁣ ${ username }`, files: [
-                                { attachment: chatResponse }
+                            content: `Here ya go⁣ ${ username } \n Seed: ${ chatResponse.seed } \n Prompt: ${ chatResponse.prompts } \n Negative Prompts: ${ chatResponse.negativePrompts }`, files: [
+                                { attachment: chatResponse.buffer }
                             ]
                         })
                     } else {
