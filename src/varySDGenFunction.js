@@ -73,14 +73,20 @@ async function chatWithAi(args, message, user) {
                 weight: -1
             });
         }
-        console.log(text_prompts[0]['text']);
+
 
 
         const formData = new FormData();
         formData.append('init_image', canvasBuffer);
         formData.append('init_image_mode', 'IMAGE_STRENGTH');
-        formData.append('image_strength', 0.4);
+        formData.append('image_strength', 0.3);
         formData.append('text_prompts[0][text]', text_prompts[0]['text']);
+        formData.append('text_prompts[0][weight]', text_prompts[0]['weight']);
+        if (text_prompts.length > 1) {
+            formData.append('text_prompts[1][text]', text_prompts[1]['text']);
+            formData.append('text_prompts[1][weight]', text_prompts[1]['weight']);
+        }
+
         formData.append('cfg_scale', 7);
         formData.append('clip_guidance_preset', 'FAST_BLUE');
         formData.append('samples', 1);
