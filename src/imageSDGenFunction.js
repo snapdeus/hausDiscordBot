@@ -2,15 +2,15 @@ require('dotenv').config();
 const User = require('../models/user');
 // const { Configuration, OpenAIApi } = require("openai");
 const Discord = require('discord.js');
-const axios = require('axios')
-const fetch = require('node-fetch')
-const fs = require('fs')
-const apiKey = process.env.STABILITY_API_KEY
+const axios = require('axios');
+const fetch = require('node-fetch');
+const fs = require('fs');
+const apiKey = process.env.STABILITY_API_KEY;
 
-const config = { headers: { Authorization: `Bearer ${ apiKey }` } }
+const config = { headers: { Authorization: `Bearer ${ apiKey }` } };
 
-const engineId = 'stable-diffusion-v1-5'
-const url = `https://api.stability.ai/v1/generation/${ engineId }/text-to-image`
+const engineId = 'stable-diffusion-v1-5';
+const url = `https://api.stability.ai/v1/generation/${ engineId }/text-to-image`;
 
 
 function removeLetters(inputString) {
@@ -72,16 +72,16 @@ async function chatWithAi(args, message, user) {
                 },
                 body: JSON.stringify({
                     text_prompts,
-                    cfg_scale: 7,
+                    cfg_scale: 8,
                     clip_guidance_preset: 'FAST_BLUE',
                     height: 512,
                     width: 512,
                     seed: mySeed ? mySeed : 0,
                     samples: 1,
-                    steps: 50,
+                    steps: 75,
                 }),
             }
-        )
+        );
 
         if (!response.ok) {
             throw new Error(`Non-200 response: ${ await response.text() }`);
@@ -92,8 +92,8 @@ async function chatWithAi(args, message, user) {
             seed: mySeed ? mySeed : 0,
             prompts: prompts.join(" "),
             negativePrompts: negativePrompts.length > 0 ? negativePrompts.join(" ") : "N/A"
-        }
-        return chatResponse
+        };
+        return chatResponse;
     } catch (e) {
         console.log(`api error ${ e }`);
         return e;
