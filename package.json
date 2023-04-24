@@ -19,6 +19,7 @@
     "canvas": "^2.11.2",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
+    "form-data": "^4.0.0",
     "htmlparser2": "^8.0.2",
     "langchain": "0.0.39",
     "mongoose": "^6.3.1",
