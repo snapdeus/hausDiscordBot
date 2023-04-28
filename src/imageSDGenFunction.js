@@ -9,7 +9,7 @@ const apiKey = process.env.STABILITY_API_KEY;
 
 const config = { headers: { Authorization: `Bearer ${ apiKey }` } };
 
-const engineId = 'stable-diffusion-v1-5';
+const engineId = 'stable-diffusion-512-v2-1';
 const url = `https://api.stability.ai/v1/generation/${ engineId }/text-to-image`;
 
 

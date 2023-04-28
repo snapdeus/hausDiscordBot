@@ -9,7 +9,7 @@ const apiKey = process.env.STABILITY_API_KEY;
 const path = require('path');
 const config = { headers: { Authorization: `Bearer ${ apiKey }` } };
 const { createCanvas, loadImage, Image } = require('canvas');
-const engineId = 'stable-diffusion-v1-5';
+const engineId = 'stable-diffusion-512-v2-1';
 const FormData = require('form-data');
 
 function removeLetters(inputString) {
