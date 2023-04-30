@@ -68,8 +68,8 @@ async function chatWithAi(args, message, memory, chatBot) {
 
             temperature: 0.8,
             openAIApiKey: process.env.OPENAI_API_KEY,
-            /*default is gpt3.5*/
-            modelName: 'gpt-4',
+            model: "gpt-3.5-turbo",
+            // modelName: 'gpt-4',
 
 
             // verbose: true,

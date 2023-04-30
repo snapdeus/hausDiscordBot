@@ -17,13 +17,13 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 
-const width = 256
-const height = 256
+const width = 512
+const height = 512
 const canvas = createCanvas(width, height);
 const ctx = canvas.getContext('2d');
 async function loadImageAndDraw(imagePath) {
     const image = await loadImage(imagePath);
-    ctx.drawImage(image, 0, 0, 256, 256);
+    ctx.drawImage(image, 0, 0, 512, 512);
 }
 
 
@@ -62,7 +62,7 @@ async function chatWithAi(args, message, user) {
             prompt,
             fs.createReadStream(path.join(dir, "mask.png")),
             1,
-            "256x256"
+            "512x512"
         );
 
 
@@ -70,7 +70,7 @@ async function chatWithAi(args, message, user) {
         // const completion = await openai.createImageEdit(
         //     imageBuffer,
         //     prompt,
-        //     "256x256"
+        //     "512x512"
         // );
 
         //ORDER FOR MASK
@@ -79,14 +79,14 @@ async function chatWithAi(args, message, user) {
         //     prompt,
         //     mask,
         //     1,
-        //     "256x256"
+        //     "512x512"
         // );
 
         //VARIATION
         // const completion = await openai.createImageVariation(
         //     imageBuffer,
         //     1,
-        //     "256x256"
+        //     "512x512"
         // );
 
 
