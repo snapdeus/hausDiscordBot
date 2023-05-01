@@ -1,7 +1,7 @@
 
-const { chatWithAi } = require('../src/chatFunctions')
-const Memory = require('../models/memoryBank')
-const User = require('../models/user')
+const { chatWithAi } = require('../src/chatFunctions');
+const Memory = require('../models/memoryBank');
+const User = require('../models/user');
 const { v4: uuidv4 } = require('uuid');
 
 
@@ -21,7 +21,7 @@ const allowedRoles = [
 
 
     // '974050213075513405'
-]
+];
 
 const talkedRecently = new Set();
 
@@ -37,12 +37,13 @@ module.exports = {
     description: 'chat with user',
 
     async execute(client, message, args, member) {
+        return message.channel.send(`You do not currently have permission to chat with me. Please acquire Infinite Haus Coins`);
         const username = message.author.username;
         const userId = message.author.id;
         const guildId = message.guild.id;
 
         // FIND USER IN DB
-        const user = await User.findOne({ userId: userId })
+        const user = await User.findOne({ userId: userId });
         if (!user) {
             const user = new User({
                 username: `${ username }`,
@@ -50,15 +51,15 @@ module.exports = {
                 guildId: `${ guildId }`,
                 xpOverTime: 0,
                 memories: [],
-            })
-            await user.save()
+            });
+            await user.save();
             return "Initializing...";
         }
 
         // INITIALIZE MEMORY THE FIRST TIME
         //PUT THIS IN SEEDS FILE
         // await Memory.deleteMany({})
-        const memory = await Memory.findOne({})
+        const memory = await Memory.findOne({});
         if (!memory) {
             const memory = new Memory({
                 memories: [
@@ -72,31 +73,31 @@ module.exports = {
                     }
 
                 ]
-            })
+            });
 
-            await memory.save()
+            await memory.save();
             return message.channel.send("Initializing memory...please wait 1 second and try again.");
         }
 
         if (message.channel.id !== '975202962173485186' && message.channel.id !== '884434543543726134') {
             message.channel.send("Please chat with the ai in the 'ai-chat' channel.");
-            return
+            return;
         }
 
-        let role = member._roles[0]
+        let role = member._roles[0];
 
         if (args.length > 2000) {
             message.channel.send(`Please limit the length your prompt to 2000 characters.`);
-            return
+            return;
         }
 
         if (allowedRoles.includes(role) || user.xpOverTime > 300) {
             if (talkedRecently.has(message.author.id)) {
-                message.channel.send("Please wait 5s before issuing another prompt.")
+                message.channel.send("Please wait 5s before issuing another prompt.");
             } else {
                 try {
                     const chatBot = client.user.username;
-                    const chatResponse = await chatWithAi(args, message, memory, chatBot)
+                    const chatResponse = await chatWithAi(args, message, memory, chatBot);
 
                     if (chatResponse.length > 2000) {
 
@@ -109,13 +110,13 @@ module.exports = {
                     } else {
                         message.reply(`${ chatResponse }`);
                     }
-                    user.xpOverTime = user.xpOverTime - 20
-                    await user.save()
+                    user.xpOverTime = user.xpOverTime - 20;
+                    await user.save();
 
 
                 } catch (e) {
                     message.channel.send(`ERROR`);
-                    console.log(e)
+                    console.log(e);
                 }
 
                 talkedRecently.add(message.author.id);
@@ -132,4 +133,4 @@ module.exports = {
             message.channel.send(`You do not currently have permission to chat with me. Please acquire 🪙300 Haus Coins`);
         }
     }
-}
+};

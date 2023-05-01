@@ -22,6 +22,8 @@ module.exports = {
     description: 'vary image from stable diffusion',
 
     async execute(client, message, args, member) {
+
+        return message.channel.send(`You do not currently have permission to chat with me. Please acquire Infinite Haus Coins`);
         const username = message.author.username;
         const userId = message.author.id;
         const guildId = message.guild.id;
