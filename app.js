@@ -98,7 +98,7 @@ client.on('ready', () => {
         retrieveComicAndSend();
     });
 
-    retrieveComicAndSend();
+    // retrieveComicAndSend();
     const sendArticleLinks = async () => {
         await retrieveArticlesAndSend(client);
     };
