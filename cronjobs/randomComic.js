@@ -45,9 +45,9 @@ async function addComicToCache(num) {
 }
 //deletes the entire array & key
 // function delDB() {
-//     db.delete('comicsArray')
+//     db.delete('comicsArray');
 // }
-// delDB()
+// delDB();
 
 
 module.exports.getRandomComic = async () => {
