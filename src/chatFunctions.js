@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 
 const { Configuration, OpenAIApi } = require("openai");
 const Discord = require('discord.js');
@@ -13,7 +13,7 @@ if (process.env.NODE_ENV?.trim() === 'development') {
     short_term_memory = 3;
     memory_offset = 2;
     k_value = 1;
-    openAIModelName = 'gpt-4'
+    openAIModelName = 'gpt-4';
 } else {
     config = require('../config/config.json');
     short_term_memory = 6;
@@ -30,7 +30,7 @@ const openai = new OpenAIApi(configuration);
 
 
 async function chatWithAi(args, message, memory, chatBot) {
-    const initiliazing = "Initializing..."
+    const initiliazing = "Initializing...";
     const username = message.author.username;
     const userId = message.author.id;
     const guildId = message.guild.id;
@@ -66,18 +66,18 @@ async function chatWithAi(args, message, memory, chatBot) {
         });
 
         const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 1 });
-        const PINECONE_NAME_SPACE = "TESTINDEX"
+        const PINECONE_NAME_SPACE = "TESTINDEX";
         const model = new ChatOpenAI({
 
             temperature: 0.8,
             openAIApiKey: process.env.OPENAI_API_KEY,
             modelName: openAIModelName,
-            // modelName: 'gpt-4',
+            modelName: 'gpt-4',
 
 
             // verbose: true,
             // callbackManager,
-        })
+        });
         const pinecone = new PineconeClient();
         await pinecone.init({
             environment: config.PINECONE_SERVER,
@@ -97,20 +97,20 @@ async function chatWithAi(args, message, memory, chatBot) {
             { pineconeIndex: index, textKey: "text", namespace: PINECONE_NAME_SPACE, },
 
         );
-        const prompt = args.join(' ')
+        const prompt = args.join(' ');
 
         const oldMemoriesArray = [];
         //construct each conversation memory and push to 
         for (mem of memory.memories) {
-            oldMemoriesArray.push(`${ mem.userName } said: ${ mem.userStatement }.  ${ mem.aiName } replied ${ mem.aiStatement }.`)
+            oldMemoriesArray.push(`${ mem.userName } said: ${ mem.userStatement }.  ${ mem.aiName } replied ${ mem.aiStatement }.`);
         }
 
         const memoryObject = {
             oldMemories: oldMemoriesArray.join(" "),
             loadMemoryVariables: function () {
-                return { memoryKey: "chat_history" }
+                return { memoryKey: "chat_history" };
             }
-        }
+        };
 
 
         //AGENT STUFF
@@ -143,7 +143,7 @@ async function chatWithAi(args, message, memory, chatBot) {
         });
 
 
-        const chatResponse = response['text']
+        const chatResponse = response['text'];
 
         //BUILD CHAT MEMEORY
         const thisChatMemory = {
@@ -153,9 +153,9 @@ async function chatWithAi(args, message, memory, chatBot) {
             userId: userId,
             userName: username,
             aiName: chatBot,
-        }
+        };
 
-        memory.memories.push(thisChatMemory)
+        memory.memories.push(thisChatMemory);
 
 
         //We want short term memory to be an array of 20 memories
@@ -180,13 +180,13 @@ async function chatWithAi(args, message, memory, chatBot) {
             memory.memories = memory.memories.splice(-(short_term_memory - memory_offset));
         }
 
-        await memory.save()
-        return chatResponse
+        await memory.save();
+        return chatResponse;
 
     } catch (e) {
-        console.log(`api error ${ e }`)
+        console.log(`api error ${ e }`);
     }
 
 }
 
-module.exports = { chatWithAi }
+module.exports = { chatWithAi };
