@@ -1,15 +1,15 @@
 
 const Discord = require('discord.js');
-const db = require('quick.db')
-
+const { QuickDB } = require("quick.db");
+const db = new QuickDB({ filePath: `./json.sqlite` });
 module.exports = {
     name: "warn",
 
     async execute(client, message, args) {
-        var embedColor = '0x5D40F2'
+        var embedColor = '0x5D40F2';
 
-        if (!message.member.permissions.has("ADMINISTRATOR")) return message.channel.send('NO. **You can not use this command | Permission: ADMINISTRATOR**')
-        if (!message.member.permissions.has("MANAGE_CHANNELS")) return message.channel.send('NO. **I do not have the correct permissions | Permission : MANAGE_CHANNELS**')
+        if (!message.member.permissions.has("ADMINISTRATOR")) return message.channel.send('NO. **You can not use this command | Permission: ADMINISTRATOR**');
+        if (!message.member.permissions.has("MANAGE_CHANNELS")) return message.channel.send('NO. **I do not have the correct permissions | Permission : MANAGE_CHANNELS**');
 
 
         const user = message.mentions.members.first();
@@ -44,10 +44,10 @@ module.exports = {
 
 
 
-        let warnings = db.get(`warnings_${ message.guild.id }_${ user.id }`);
+        let warnings = await db.get(`warnings_${ message.guild.id }_${ user.id }`);
 
         if (warnings === null) {
-            db.set(`warnings_${ message.guild.id }_${ user.id }`, 1);
+            await db.set(`warnings_${ message.guild.id }_${ user.id }`, 1);
             const authorName = message.author.username;
 
             var warningEmbed = new Discord.MessageEmbed()
@@ -65,17 +65,17 @@ module.exports = {
                 .setColor(embedColor)
                 .setDescription(` **${ user } Successfully Warned**`)
                 .addField('Warned by', `${ message.author }`)
-                .addField('Reason', `**${ reason }**`)
-            let mChannel = db.fetch(`modlog_${ message.guild.id }`)
-            if (!mChannel) return message.channel.send(warnSuccessfulEmbed)
-            let warnChannel = message.guild.channels.cache.get(mChannel)
+                .addField('Reason', `**${ reason }**`);
+            let mChannel = await db.get(`modlog_${ message.guild.id }`);
+            if (!mChannel) return message.channel.send({ embeds: [warningEmbed] });
+            let warnChannel = message.guild.channels.cache.get(mChannel);
             if (!warnChannel) return;
-            warnChannel.send({ embeds: [warnSuccessfulEmbed] })
+            warnChannel.send({ embeds: [warningEmbed] });
         } else if (warnings === 1) {
 
-            db.add(`warnings_${ message.guild.id }_${ user.id }`, 1);
+            await db.add(`warnings_${ message.guild.id }_${ user.id }`, 1);
             const authorName = message.author.username;
-            console.log(authorName)
+            console.log(authorName);
             var warningEmbed = new Discord.MessageEmbed()
                 .setColor(embedColor)
                 .setAuthor({ name: authorName })
@@ -92,7 +92,7 @@ module.exports = {
                 .setColor(embedColor)
                 .setDescription(` **${ user } Successfully Warned & Muted**`)
                 .addField('Warned by', `${ message.author }`)
-                .addField('Reason', `**${ reason }**`)
+                .addField('Reason', `**${ reason }**`);
 
 
             let muterole = message.guild.roles.cache.find(x => x.name === "Muted");
@@ -104,7 +104,7 @@ module.exports = {
                         color: "#8b6363",
                         permissions: ['ADD_REACTIONS', 'VIEW_CHANNEL', 'READ_MESSAGE_HISTORY']
 
-                    })
+                    });
                 } catch (e) {
                     console.log(e.stack);
                 }
@@ -114,20 +114,20 @@ module.exports = {
 
             setTimeout(() => {
                 user.roles.remove(muterole);
-            }, 3600000)
+            }, 3600000);
 
 
 
-            let mChannel = db.fetch(`modlog_${ message.guild.id }`)
-            if (!mChannel) return message.channel.send({ embeds: [warnSuccessfulEmbed] })
-            let warnChannel = message.guild.channels.cache.get(mChannel)
+            let mChannel = await db.get(`modlog_${ message.guild.id }`);
+            if (!mChannel) return message.channel.send({ embeds: [warnSuccessfulEmbed] });
+            let warnChannel = message.guild.channels.cache.get(mChannel);
             if (!warnChannel) return;
-            warnChannel.send({ embeds: [warnSuccessfulEmbed] })
+            warnChannel.send({ embeds: [warnSuccessfulEmbed] });
 
         } else if (warnings === 2) {
-            db.add(`warnings_${ message.guild.id }_${ user.id }`, 1);
+            await db.add(`warnings_${ message.guild.id }_${ user.id }`, 1);
             const authorName = message.author.username;
-            console.log(authorName)
+            console.log(authorName);
             var warningEmbed = new Discord.MessageEmbed()
                 .setColor(embedColor)
                 .setAuthor({ name: authorName })
@@ -143,28 +143,28 @@ module.exports = {
                 .setColor(embedColor)
                 .setDescription(` **${ user } Successfully Warned & Kicked, 3rd warning**`)
                 .addField('Warned by', `${ message.author }`)
-                .addField('Reason', `**${ reason }**`)
+                .addField('Reason', `**${ reason }**`);
 
 
             user.send({ embeds: [warningEmbed] })
                 .catch(() => message.reply("unable to send message"))
                 .then(() => user.kick(reason))
                 .catch(err => {
-                    if (err) console.log(err)
-                })
+                    if (err) console.log(err);
+                });
 
 
-            let mChannel = db.fetch(`modlog_${ message.guild.id }`)
-            if (!mChannel) return message.channel.send({ embeds: [warnSuccessfulEmbed] })
-            let warnChannel = message.guild.channels.cache.get(mChannel)
+            let mChannel = await db.get(`modlog_${ message.guild.id }`);
+            if (!mChannel) return message.channel.send({ embeds: [warnSuccessfulEmbed] });
+            let warnChannel = message.guild.channels.cache.get(mChannel);
             if (!warnChannel) return;
-            warnChannel.send({ embeds: [warnSuccessfulEmbed] })
+            warnChannel.send({ embeds: [warnSuccessfulEmbed] });
 
 
         } else if (warnings === 3) {
-            db.add(`warnings_${ message.guild.id }_${ user.id }`, 1);
+            await db.add(`warnings_${ message.guild.id }_${ user.id }`, 1);
             const authorName = message.author.username;
-            console.log(authorName)
+            console.log(authorName);
             var warningEmbed = new Discord.MessageEmbed()
                 .setColor(embedColor)
                 .setAuthor({ name: authorName })
@@ -179,7 +179,7 @@ module.exports = {
                 .setColor(embedColor)
                 .setDescription(` **${ user } BANNED, final warning**`)
                 .addField('Warned by', `${ message.author }`)
-                .addField('Reason', `**${ reason }**`)
+                .addField('Reason', `**${ reason }**`);
 
 
             user.send({ embeds: [warningEmbed] })
@@ -188,16 +188,16 @@ module.exports = {
                 .catch(err => {
                     message.reply('I was unable to ban the member');
                     console.error(err);
-                })
+                });
 
 
-            let mChannel = db.fetch(`modlog_${ message.guild.id }`)
-            if (!mChannel) return message.channel.send({ embeds: [warnSuccessfulEmbed] })
-            let warnChannel = message.guild.channels.cache.get(mChannel)
+            let mChannel = await db.get(`modlog_${ message.guild.id }`);
+            if (!mChannel) return message.channel.send({ embeds: [warnSuccessfulEmbed] });
+            let warnChannel = message.guild.channels.cache.get(mChannel);
             if (!warnChannel) return;
-            warnChannel.send({ embeds: [warnSuccessfulEmbed] })
+            warnChannel.send({ embeds: [warnSuccessfulEmbed] });
 
 
         }
     }
-}
+};

@@ -37,7 +37,7 @@ module.exports = {
     description: 'chat with user',
 
     async execute(client, message, args, member) {
-        return message.channel.send(`You do not currently have permission to chat with me. Please acquire Infinite Haus Coins`);
+        // return message.channel.send(`You do not currently have permission to chat with me. Please acquire Infinite Haus Coins`);
         const username = message.author.username;
         const userId = message.author.id;
         const guildId = message.guild.id;
