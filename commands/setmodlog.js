@@ -1,6 +1,7 @@
-const db = require("quick.db")
+const { QuickDB } = require("quick.db");
+const db = new QuickDB({ filePath: `./json.sqlite` });
 const { Permissions } = require('discord.js');
-const Discord = require('discord.js')
+const Discord = require('discord.js');
 
 module.exports = {
     name: "setmodlog",
@@ -8,10 +9,10 @@ module.exports = {
     async execute(client, message, args) {
 
 
-        if (!message.member.permissions.has("ADMINISTRATOR")) return message.channel.send('<a:no:784463793366761532> **You can not use this command | Permission: ADMINISTRATOR**')
-        if (!message.member.permissions.has("MANAGE_CHANNELS")) return message.channel.send('<a:no:784463793366761532> **I do not have the correct permissions | Permission : MANAGE_CHANNELS**')
+        if (!message.member.permissions.has("ADMINISTRATOR")) return message.channel.send('<a:no:784463793366761532> **You can not use this command | Permission: ADMINISTRATOR**');
+        if (!message.member.permissions.has("MANAGE_CHANNELS")) return message.channel.send('<a:no:784463793366761532> **I do not have the correct permissions | Permission : MANAGE_CHANNELS**');
         if (!args[0]) {
-            let b = await db.fetch(`modlog_${ message.guild.id }`);
+            let b = await db.get(`modlog_${ message.guild.id }`);
             let channelName = message.guild.channels.cache.get(b);
             if (message.guild.channels.cache.has(b)) {
                 return message.channel.send(
@@ -29,18 +30,18 @@ module.exports = {
 
         }
         try {
-            let a = await db.fetch(`modlog_${ message.guild.id }`)
+            let a = await db.get(`modlog_${ message.guild.id }`);
 
             if (channel.id === a) {
-                return message.channel.send("**<a:no:784463793366761532> This Channel is Already Set As Modlog Channel**")
+                return message.channel.send("**<a:no:784463793366761532> This Channel is Already Set As Modlog Channel**");
             } else {
-                client.guilds.cache.get(message.guild.id).channels.cache.get(channel.id).send("<a:yes:784463701305458708> **Modlog Channel Set**")
-                db.set(`modlog_${ message.guild.id }`, channel.id)
+                client.guilds.cache.get(message.guild.id).channels.cache.get(channel.id).send("<a:yes:784463701305458708> **Modlog Channel Set**");
+                await db.set(`modlog_${ message.guild.id }`, channel.id);
 
-                message.channel.send(`<a:yes:784463701305458708> **Modlog Channel Has Been Set Successfully in \`${ channel.name }\`**`)
+                message.channel.send(`<a:yes:784463701305458708> **Modlog Channel Has Been Set Successfully in \`${ channel.name }\`**`);
             }
         } catch {
             return message.channel.send("<a:no:784463793366761532> **Error - `Missing Permissions Or Channel Is Not A Text Channel`**");
         }
     }
-}
+};
