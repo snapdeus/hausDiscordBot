@@ -89,7 +89,7 @@ exports.starter = [
     "Adding excitement to my daily routine by",
     "The delivery driver saw me",
 
-]
+];
 
 
 
@@ -2204,6 +2204,26 @@ exports.jackingOff = [
     "Exposing the underbelly of xanadu",
     "Yearning for the yin and yang of yearning",
     "Zealously zipping through the zone of zestful delight",
+    "Discovered in the midst of the sweaty, single-handed Olympics",
+    "Caught red-faced while tuning the skin flute solo",
+    "Interrupted during a scandalously private audience with the Pope",
+    "Detected while fervently auditioning the silent hand puppet",
+    "Busted during a clandestine meeting with the illustrious Palmela Handerson",
+    "Caught red-handed performing the finesse-filled five finger ballet",
+    "Stumbled upon during an embarrassingly hands-on seminar",
+    "Accosted mid-way through the grueling arm wrestling tournament",
+    "Surprised mid-moan while spelunking the hallowed trouser cave",
+    "Caught in the act of practicing the secret handshake with gusto",
+    "Discovered while fervently firing the flesh musket",
+    "Busted while fervently engaging in self-service at the pleasure station",
+    "Caught during a trip to the self-checkout aisle, no coupons needed",
+    "Interrupted while eagerly taking matters into your own hands",
+    "Found out during a private dance with nature, no audience required",
+    "Stumbled upon during an intimate moment with a very personal inner peace",
+    "Detected while performing a tantalizing magic trick with the wand",
+    "Caught in the throes of doing the passionate one-handed tango",
+    "Discovered while performing a spirited solo on the skin trumpet",
+    "Caught in the jubilant throes of having a hand party",
 ]
 
 
