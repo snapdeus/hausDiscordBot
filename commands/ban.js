@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
-const db = require('quick.db')
+const { QuickDB } = require("quick.db");
+const db = new QuickDB({ filePath: `./json.sqlite` });
 
 module.exports = {
     name: "ban",
@@ -16,8 +17,8 @@ module.exports = {
         let reason = args.join(" ").slice(22);
         if (!reason) reason = "No Reason Specified";
 
-        if (!message.member.permissions.has("BAN_MEMBERS")) return message.channel.send('NO. **You can not use this command | Permission: BAN_MEMBERS**')
-        if (!message.member.permissions.has("BAN_MEMBERS")) return message.channel.send('NO. **I do not have the correct permissions | Permission : BAN_MEMBERS**')
+        if (!message.member.permissions.has("BAN_MEMBERS")) return message.channel.send('NO. **You can not use this command | Permission: BAN_MEMBERS**');
+        if (!message.member.permissions.has("BAN_MEMBERS")) return message.channel.send('NO. **I do not have the correct permissions | Permission : BAN_MEMBERS**');
 
 
 
@@ -28,14 +29,14 @@ module.exports = {
             .addField('Reason', `**${ reason }**`)
             .setFooter({ text: 'Ban time' })
             .setThumbnail(member.user.displayAvatarURL())
-            .setTimestamp()
+            .setTimestamp();
 
 
         let userE = new Discord.MessageEmbed()
             .setTitle(`You've Been Banned From **${ message.guild.name }**`)
             .addField('Mod', `**${ message.author }**`)
             .addField('Reason', `**${ reason }**`)
-            .setTimestamp(new Date())
+            .setTimestamp(new Date());
 
         member.send({ embeds: [userE] })
             .catch(() => message.reply("unable to send message"))
@@ -43,15 +44,15 @@ module.exports = {
             .catch(err => {
                 message.reply('I was unable to ban the member');
                 console.error(err);
-            })
+            });
 
 
 
-        let mChannel = db.fetch(`modlog_${ message.guild.id }`)
-        if (!mChannel) return message.channel.send(e)
-        let banChannel = message.guild.channels.cache.get(mChannel)
+        let mChannel = await db.get(`modlog_${ message.guild.id }`);
+        if (!mChannel) return message.channel.send(e);
+        let banChannel = message.guild.channels.cache.get(mChannel);
         if (!banChannel) return;
-        banChannel.send({ embeds: [e] })
+        banChannel.send({ embeds: [e] });
         // message.delete().then(msg => console.log(`Deleted message from ${ msg.author.username }`))
         //     .catch(console.error);
     }

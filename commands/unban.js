@@ -1,6 +1,7 @@
 
 const Discord = require('discord.js');
-const db = require('quick.db')
+const { QuickDB } = require("quick.db");
+const db = new QuickDB({ filePath: `./json.sqlite` });
 
 
 module.exports = {
@@ -8,18 +9,18 @@ module.exports = {
 
     async execute(client, message, args) {
 
-        if (!message.member.permissions.has("BAN_MEMBERS")) return message.channel.send('<NO. **You can not use this command | Permission: BAN_MEMBERS**')
-        if (!message.member.permissions.has("BAN_MEMBERS")) return message.channel.send('<NO. **I do not have the correct permissions | Permission : BAN_MEMBERS**')
+        if (!message.member.permissions.has("BAN_MEMBERS")) return message.channel.send('<NO. **You can not use this command | Permission: BAN_MEMBERS**');
+        if (!message.member.permissions.has("BAN_MEMBERS")) return message.channel.send('<NO. **I do not have the correct permissions | Permission : BAN_MEMBERS**');
 
 
-        let userID = args[0]
+        let userID = args[0];
         if (isNaN(userID)) return message.reply(`<NO. **Please specify an ID**`);
-        message.guild.bans.fetch().then(bans => {
+        message.guild.bans.fetch().then(async bans => {
 
-            if (bans.size == 0) return message.channel.send('<NO. **No one is banned in this server**')
-            let bUser = bans.find(b => b.user.id == userID)
-            if (!bUser) return message.channel.send('<NO. **User not found**')
-            message.guild.members.unban(bUser.user)
+            if (bans.size == 0) return message.channel.send('<NO. **No one is banned in this server**');
+            let bUser = bans.find(b => b.user.id == userID);
+            if (!bUser) return message.channel.send('<NO. **User not found**');
+            message.guild.members.unban(bUser.user);
 
 
             const e = new Discord.MessageEmbed()
@@ -30,17 +31,17 @@ module.exports = {
                 .addField("**Unbanned By**", `**${ message.author.username }**`)
                 .setTimestamp();
 
-            let mChannel = db.fetch(`modlog_${ message.guild.id }`)
-            if (!mChannel) return message.channel.send(e)
-            let banChannel = message.guild.channels.cache.get(mChannel)
+            let mChannel = await db.get(`modlog_${ message.guild.id }`);
+            if (!mChannel) return message.channel.send(e);
+            let banChannel = message.guild.channels.cache.get(mChannel);
             if (!banChannel) return;
-            banChannel.send({ embeds: [e] })
+            banChannel.send({ embeds: [e] });
 
 
 
 
 
 
-        })
+        });
     }
-}
+};

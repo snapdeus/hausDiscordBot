@@ -1,7 +1,7 @@
 
 const Discord = require('discord.js');
-const db = require('quick.db')
-
+const { QuickDB } = require("quick.db");
+const db = new QuickDB({ filePath: `./json.sqlite` });
 
 module.exports = {
     name: "mute",
@@ -29,7 +29,7 @@ module.exports = {
         }
 
 
-        const vrole = user.roles.cache
+        const vrole = user.roles.cache;
 
         let muterole = message.guild.roles.cache.find(x => x.name === "Muted");
         if (!muterole) {
@@ -40,7 +40,7 @@ module.exports = {
                     color: "#8b6363",
                     permissions: ['ADD_REACTIONS', 'VIEW_CHANNEL', 'READ_MESSAGE_HISTORY']
 
-                })
+                });
             } catch (e) {
                 console.log(e.stack);
             }
@@ -55,13 +55,13 @@ module.exports = {
             .setTitle('User Mute')
             .addField('Username', `**${ message.mentions.users.first().username }**`)
             .addField('Muted by', `**${ message.author }**`)
-            .addField('Reason', `**${ reason }**`)
+            .addField('Reason', `**${ reason }**`);
 
-        let mChannel = db.fetch(`modlog_${ message.guild.id }`)
-        if (!mChannel) return message.channel.send(mute)
-        let muteChannel = message.guild.channels.cache.get(mChannel)
+        let mChannel = await db.get(`modlog_${ message.guild.id }`);
+        if (!mChannel) return message.channel.send(mute);
+        let muteChannel = message.guild.channels.cache.get(mChannel);
         if (!muteChannel) return;
-        muteChannel.send({ embeds: [mute] })
+        muteChannel.send({ embeds: [mute] });
         user.send(`**You are now muted from ${ message.guild.name } because of reason: ${ reason }**`);
     }
-}
+};

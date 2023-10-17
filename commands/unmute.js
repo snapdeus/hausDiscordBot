@@ -1,6 +1,7 @@
 
 const Discord = require('discord.js');
-const db = require('quick.db')
+const { QuickDB } = require("quick.db");
+const db = new QuickDB({ filePath: `./json.sqlite` });
 
 
 module.exports = {
@@ -26,23 +27,23 @@ module.exports = {
             return message.channel.send("NO. **This user dont have a Muted role**");
         }
 
-        user.roles.remove(muterole)
+        user.roles.remove(muterole);
 
 
 
         const mute = new Discord.MessageEmbed()
             .setTitle('User Unmuted')
             .addField('Username', `**${ message.mentions.users.first().username }**`)
-            .addField('Unmuted by', `**${ message.author }**`)
+            .addField('Unmuted by', `**${ message.author }**`);
 
-        let mChannel = db.fetch(`modlog_${ message.guild.id }`)
-        if (!mChannel) return message.channel.send(mute)
-        let muteChannel = message.guild.channels.cache.get(mChannel)
+        let mChannel = await db.get(`modlog_${ message.guild.id }`);
+        if (!mChannel) return message.channel.send(mute);
+        let muteChannel = message.guild.channels.cache.get(mChannel);
         if (!muteChannel) return;
-        muteChannel.send({ embeds: [mute] })
+        muteChannel.send({ embeds: [mute] });
 
 
         user.send(`**You are now unmuted from ${ message.guild.name }**`);
 
     }
-}
+};
