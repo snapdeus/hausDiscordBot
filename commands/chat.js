@@ -102,7 +102,8 @@ module.exports = {
             return;
         }
 
-        if (allowedRoles.includes(role) || user.xpOverTime > 5000) {
+        if (user.xpOverTime > 5000) {
+            console.log(user.xpOverTime);
             if (talkedRecently.has(message.author.id)) {
                 message.channel.send("Please wait 5s before issuing another prompt.");
             } else {
