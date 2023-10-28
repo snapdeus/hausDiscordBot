@@ -22,7 +22,7 @@ const getTopStories = async () => {
 
 
     try {
-        const url = 'https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty&orderBy="$priority"&limitToFirst=5';
+        const url = 'https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty&orderBy="$priority"&limitToFirst=3';
         const res = await axios.get(url);
 
         return res.data;
@@ -84,12 +84,12 @@ module.exports.retrieveTechArticlesAndSend = async (client) => {
         const { data } = await axios.get(url);
         let image;
         try {
-            image = await fetchOgImage(data.url)
+            image = await fetchOgImage(data.url);
 
         } catch (e) {
             console.log(e);
         }
-        data.imageURL = image ? image : 'https://i.imgur.com/G1CV4Hd.png'
+        data.imageURL = image ? image : 'https://i.imgur.com/G1CV4Hd.png';
         articleObjectsArray.push(data);
     }
 
