@@ -10,11 +10,22 @@ const allowedRoles = [
     '973348302055682088',
     //admin
     '973978697910599781',
+    '1102398291842453584',
     '954022194520932393',
     //magnate
     '954012026039070741',
     //snapdeus server 
     '974050213075513405',
+    //hauscat
+    '953988101859049553',
+    //md
+    '954034692598951976',
+    //band
+    '973620158423781496',
+    //honorary member
+    '968476411474112533',
+    //hound
+    '972920088061694053',
 
     //unknown
     // '968476411474112533',
@@ -91,7 +102,7 @@ module.exports = {
             return;
         }
 
-        if (allowedRoles.includes(role) || user.xpOverTime > 300) {
+        if (allowedRoles.includes(role) || user.xpOverTime > 5000) {
             if (talkedRecently.has(message.author.id)) {
                 message.channel.send("Please wait 5s before issuing another prompt.");
             } else {
@@ -110,7 +121,7 @@ module.exports = {
                     } else {
                         message.reply(`${ chatResponse }`);
                     }
-                    user.xpOverTime = user.xpOverTime - 20;
+                    user.xpOverTime = user.xpOverTime - 5000;
                     await user.save();
 
 
@@ -130,7 +141,7 @@ module.exports = {
 
 
         } else {
-            message.channel.send(`You do not currently have permission to chat with me. Please acquire 🪙300 Haus Coins`);
+            message.channel.send(`You do not currently have permission to chat with me. Please acquire 🪙5000 Haus Coins`);
         }
     }
 };
