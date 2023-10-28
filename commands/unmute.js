@@ -37,7 +37,7 @@ module.exports = {
             .addField('Unmuted by', `**${ message.author }**`);
 
         let mChannel = await db.get(`modlog_${ message.guild.id }`);
-        if (!mChannel) return message.channel.send(mute);
+        if (!mChannel) return message.channel.send({ embeds: [mute] });
         let muteChannel = message.guild.channels.cache.get(mChannel);
         if (!muteChannel) return;
         muteChannel.send({ embeds: [mute] });

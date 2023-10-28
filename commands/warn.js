@@ -66,11 +66,13 @@ module.exports = {
                 .setDescription(` **${ user } Successfully Warned**`)
                 .addField('Warned by', `${ message.author }`)
                 .addField('Reason', `**${ reason }**`);
+
             let mChannel = await db.get(`modlog_${ message.guild.id }`);
-            if (!mChannel) return message.channel.send({ embeds: [warningEmbed] });
+            if (!mChannel) return message.channel.send({ embeds: [warnSuccessfulEmbed] });
             let warnChannel = message.guild.channels.cache.get(mChannel);
             if (!warnChannel) return;
-            warnChannel.send({ embeds: [warningEmbed] });
+
+            warnChannel.send({ embeds: [warnSuccessfulEmbed] });
         } else if (warnings === 1) {
 
             await db.add(`warnings_${ message.guild.id }_${ user.id }`, 1);

@@ -51,16 +51,20 @@ module.exports = {
 
 
 
-        const mute = new Discord.MessageEmbed()
+        var mute = new Discord.MessageEmbed()
             .setTitle('User Mute')
             .addField('Username', `**${ message.mentions.users.first().username }**`)
             .addField('Muted by', `**${ message.author }**`)
             .addField('Reason', `**${ reason }**`);
 
+
+
+
         let mChannel = await db.get(`modlog_${ message.guild.id }`);
-        if (!mChannel) return message.channel.send(mute);
+        if (!mChannel) return message.channel.send({ embeds: [mute] });
         let muteChannel = message.guild.channels.cache.get(mChannel);
         if (!muteChannel) return;
+
         muteChannel.send({ embeds: [mute] });
         user.send(`**You are now muted from ${ message.guild.name } because of reason: ${ reason }**`);
     }
