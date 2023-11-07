@@ -13,13 +13,13 @@ if (process.env.NODE_ENV?.trim() === 'development') {
     short_term_memory = 3;
     memory_offset = 2;
     k_value = 1;
-    openAIModelName = 'gpt-4';
+    openAIModelName = 'gpt-4-1106-preview';
 } else {
     config = require('../config/config.json');
     short_term_memory = 6;
     memory_offset = 3;
     k_value = 3;
-    openAIModelName = "gpt-3.5-turbo";
+    openAIModelName = "gpt-4-1106-preview";
 }
 
 
@@ -72,7 +72,7 @@ async function chatWithAi(args, message, memory, chatBot) {
             temperature: 0.8,
             openAIApiKey: process.env.OPENAI_API_KEY,
             modelName: openAIModelName,
-            modelName: 'gpt-4',
+            // modelName: 'gpt-4',
 
 
             // verbose: true,
