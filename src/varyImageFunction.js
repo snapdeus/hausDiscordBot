@@ -1,6 +1,6 @@
 require('dotenv').config();
 const User = require('../models/user');
-const { Configuration, OpenAIApi } = require("openai");
+const { OpenAI } = require("openai");
 const Discord = require('discord.js');
 
 const fs = require('fs');
@@ -11,11 +11,9 @@ const PNG = require("pngjs").PNG;
 const { createCanvas, loadImage, Image } = require('canvas');
 
 const axios = require('axios');
-const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY, // defaults to process.env["OPENAI_API_KEY"]
 });
-const openai = new OpenAIApi(configuration);
-
 
 const width = 256;
 const height = 256;

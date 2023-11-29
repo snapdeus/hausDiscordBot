@@ -109,12 +109,12 @@ client.on('ready', () => {
 
 
 
-    const sendTechArticleLinks = async () => {
-        await retrieveTechArticlesAndSend(client);
-    };
-    cron.schedule('40 */1 * * *', () => {
-        sendTechArticleLinks();
-    });
+    // const sendTechArticleLinks = async () => {
+    //     await retrieveTechArticlesAndSend(client);
+    // };
+    // cron.schedule('40 */1 * * *', () => {
+    //     sendTechArticleLinks();
+    // });
 
 });
 

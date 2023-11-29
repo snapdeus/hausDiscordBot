@@ -13,7 +13,7 @@ function isValidHttpUrl(string) {
 
 module.exports = {
     name: 'pw',
-    description: 'get archive.is link',
+    description: 'get past a paywall link',
 
     async execute(client, message, args) {
 

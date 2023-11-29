@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { Configuration, OpenAIApi } = require("openai");
+const { OpenAI } = require("openai");
 const Discord = require('discord.js');
 const { v4: uuidv4 } = require('uuid');
 let short_term_memory;
@@ -16,18 +16,15 @@ if (process.env.NODE_ENV?.trim() === 'development') {
     openAIModelName = 'gpt-4-1106-preview';
 } else {
     config = require('../config/config.json');
-    short_term_memory = 6;
-    memory_offset = 3;
-    k_value = 3;
+    short_term_memory = 3;
+    memory_offset = 2;
+    k_value = 1;
     openAIModelName = "gpt-4-1106-preview";
 }
 
-
-const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY, // defaults to process.env["OPENAI_API_KEY"]
 });
-const openai = new OpenAIApi(configuration);
-
 
 async function chatWithAi(args, message, memory, chatBot) {
     const initiliazing = "Initializing...";
@@ -72,6 +69,7 @@ async function chatWithAi(args, message, memory, chatBot) {
             temperature: 0.8,
             openAIApiKey: process.env.OPENAI_API_KEY,
             modelName: openAIModelName,
+
             // modelName: 'gpt-4',
 
 
@@ -98,6 +96,8 @@ async function chatWithAi(args, message, memory, chatBot) {
 
         );
         const prompt = args.join(' ');
+
+        const url = message.attachments.first()?.url;
 
         const oldMemoriesArray = [];
         //construct each conversation memory and push to 
@@ -138,6 +138,7 @@ async function chatWithAi(args, message, memory, chatBot) {
         const response = await chain.call({
 
             question: prompt,
+            image_url: url,
             chat_history: [memoryObject.oldMemories],
 
         });

@@ -1,16 +1,11 @@
-require('dotenv').config()
-const User = require('../models/user')
-const { Configuration, OpenAIApi } = require("openai");
+require('dotenv').config();
+const User = require('../models/user');
+const { OpenAI } = require("openai");
 const Discord = require('discord.js');
 
-
-
-const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY, // defaults to process.env["OPENAI_API_KEY"]
 });
-const openai = new OpenAIApi(configuration);
-
-
 const systemContentForRPG = `
 You will be generating code, for example a valid JSON array of objects for an RPG i'm making.
 Global Buff Rule: 10% of the items you generate should have a special buff. The buffTypes are:  Attack,  Defense,  Magic Attack,  Magic Defense,  Evade,  Endurance,  HP,  AP. The amounts range between 5 and 50.
@@ -52,11 +47,11 @@ END EXAMPLE OUTPUT
 
 Remember, only 10% of the items you generate should have buffs. If you find at the end that more than 10% have Buffs, reduce Buffs!
 If there is no Buff, omit the Buff entirely, do not put a null value. If there is no Buff, do not say that the item gives you any ability.  Only items with Buff can give user abilities. Only use the keys that are listed in the example, do not add additional keys. Do not omit any object using //… Return every object in order. The number of objects you return = totalamount.
-`
+`;
 
-const systemContent = `You are a helpful assistant bot.`
+const systemContent = `You are a helpful assistant bot.`;
 async function chatWithAi(args, message, user) {
-    const initiliazing = "Initializing..."
+    const initiliazing = "Initializing...";
     const username = message.author.username;
     const userId = message.author.id;
     const guildId = message.guild.id;
@@ -64,9 +59,9 @@ async function chatWithAi(args, message, user) {
 
     try {
 
-        const prompt = args.join(' ')
+        const prompt = args.join(' ');
 
-        user.memories.push(prompt)
+        user.memories.push(prompt);
 
         const completion = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
@@ -79,7 +74,7 @@ async function chatWithAi(args, message, user) {
             ],
         });
 
-        const chatResponse = completion.data.choices[0].message.content
+        const chatResponse = completion.data.choices[0].message.content;
 
         //++++++++++++++++images++++++++++++++++++++++++
         // const completion = await openai.createImage({
@@ -98,19 +93,19 @@ async function chatWithAi(args, message, user) {
             let tooManyMemories = user.memories.slice(-2);
 
             user.memories = tooManyMemories;
-            await user.save()
+            await user.save();
 
-            return chatResponse
+            return chatResponse;
         }
 
-        await user.save()
+        await user.save();
 
-        return chatResponse
+        return chatResponse;
 
     } catch (e) {
-        console.log(`api error ${ e }`)
+        console.log(`api error ${ e }`);
     }
 
 }
 
-module.exports = { chatWithAi }
+module.exports = { chatWithAi };
