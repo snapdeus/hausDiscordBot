@@ -65,7 +65,7 @@ module.exports = {
         //     return message.channel.send("Initializing memory...please wait 1 second and try again.");
         // }
 
-        if (message.channel.id !== '975202962173485186' && message.channel.id !== '884434543543726134') {
+        if (message.channel.id !== '977656125426106378' && message.channel.id !== '884434543543726134') {
             message.channel.send("Please chat with the ai in the 'ai-chat' channel.");
             return;
         }
@@ -106,6 +106,7 @@ module.exports = {
 
                 talkedRecently.add(message.author.id);
                 setTimeout(() => {
+                    ss;
                     // Removes the user from the set after a minute
                     talkedRecently.delete(message.author.id);
                 }, 1000);
