@@ -96,7 +96,7 @@ module.exports = {
                     } else {
                         message.reply(`${ chatResponse }`);
                     }
-                    user.xpOverTime = user.xpOverTime - 10;
+                    user.xpOverTime = user.xpOverTime - 10000;
                     await user.save();
 
                 } catch (e) {
