@@ -23,7 +23,7 @@ module.exports = {
 
     async execute(client, message, args, member) {
 
-        return message.channel.send(`You do not currently have permission to chat with me. Please acquire Infinite Haus Coins`);
+        // return message.channel.send(`You do not currently have permission to chat with me. Please acquire Infinite Haus Coins`);
         const username = message.author.username;
         const userId = message.author.id;
         const guildId = message.guild.id;
@@ -77,7 +77,7 @@ module.exports = {
             return;
         }
 
-        if (user.xpOverTime > 500) {
+        if (user.xpOverTime > 10000) {
             if (talkedRecently.has(message.author.id)) {
                 message.channel.send("Please wait 5s before issuing another prompt.");
             } else {
@@ -115,7 +115,7 @@ module.exports = {
 
 
         } else {
-            message.channel.send(`You do not currently have permission to chat with me. Please acquire 🪙500 Haus Coins`);
+            message.channel.send(`You do not currently have permission to chat with me. Please acquire 🪙10,000 Haus Coins`);
         }
     }
 };

@@ -18,25 +18,27 @@ async function chatWithAi(args, message, user) {
     try {
 
         const prompt = args.join(' ');
+        // const prompt = "a duck wearing socks";
 
-
-        const completion = await openai.createImage({
+        const completion = await openai.images.generate({
+            model: "dall-e-3",
             prompt: prompt,
             n: 1,
-            size: "512x512",
+
         });
 
 
-        const chatResponse = completion.data.data[0].url;
-
+        const chatResponse = completion.data[0].url;
+        console.log(chatResponse);
 
         return chatResponse;
 
     } catch (e) {
-        console.log(`api error ${ e.response.data.error.message }`);
-        return e.response.data.error.message;
+        console.log(`api error ${ e }`);
+        return e;
     }
 
 }
+
 
 module.exports = { chatWithAi };
