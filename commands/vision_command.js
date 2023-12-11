@@ -47,8 +47,8 @@ module.exports = {
             message.reply("You must attach a file for this to work. No URL support yet...");
             return;
         }
-
-        if (message.channel.id !== '975202962173485186' && message.channel.id !== '884434543543726134') {
+        977656125426106378;
+        if (message.channel.id !== '977656125426106378' && message.channel.id !== '884434543543726134') {
             message.channel.send("Please chat with the ai in the 'ai-chat' channel.");
             return;
         }
@@ -60,7 +60,7 @@ module.exports = {
             return;
         }
 
-        if (user.xpOverTime > 5000) {
+        if (user.xpOverTime > 10000) {
             if (talkedRecently.has(message.author.id)) {
                 message.channel.send("Please wait 5s before issuing another prompt.");
             } else {
@@ -72,7 +72,7 @@ module.exports = {
 
                     message.reply(`${ chatResponse.message.content }`);
 
-                    user.xpOverTime = user.xpOverTime - 10;
+                    user.xpOverTime = user.xpOverTime - 10000;
                     await user.save();
 
                 } catch (e) {
@@ -91,7 +91,7 @@ module.exports = {
 
 
         } else {
-            message.channel.send(`You do not currently have permission to chat with me. Please acquire 🪙5000 Haus Coins`);
+            message.channel.send(`You do not currently have permission to chat with me. Please acquire 🪙10000 Haus Coins`);
         }
     }
 };
