@@ -19,7 +19,7 @@ function splitMessage(message, maxLength = 2000) {
 }
 module.exports = {
     name: 'vision',
-    description: 'create image variation',
+    description: 'describe image',
 
     async execute(client, message, args, member) {
 
